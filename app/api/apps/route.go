@@ -43,7 +43,11 @@ func Get(c *fuego.Context) error {
 	}
 
 	queries := db.New(pool)
-	apps, err := queries.ListAppsByUser(context.Background(), userID)
+	apps, err := queries.ListAppsByUser(context.Background(), db.ListAppsByUserParams{
+		UserID: userID,
+		Limit:  100,
+		Offset: 0,
+	})
 	if err != nil {
 		return c.JSON(500, map[string]string{"error": "failed to list apps"})
 	}

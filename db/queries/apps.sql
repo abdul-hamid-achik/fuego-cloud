@@ -13,7 +13,8 @@ WHERE user_id = $1 AND name = $2;
 -- name: ListAppsByUser :many
 SELECT * FROM apps
 WHERE user_id = $1
-ORDER BY created_at DESC;
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
 
 -- name: UpdateApp :one
 UPDATE apps
