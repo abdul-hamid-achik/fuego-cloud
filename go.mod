@@ -46,6 +46,9 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	k8s.io/api v0.35.0 // indirect
+	k8s.io/apimachinery v0.35.0 // indirect
+	k8s.io/client-go v0.35.0 // indirect
 )
 
 replace github.com/abdul-hamid-achik/fuego => /Users/abdulachik/projects/fuego
