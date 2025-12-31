@@ -1,0 +1,25 @@
+package components
+
+templ Card() {
+	<div class="bg-white overflow-hidden shadow rounded-lg">
+		{ children... }
+	</div>
+}
+
+templ CardHeader() {
+	<div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+		{ children... }
+	</div>
+}
+
+templ CardBody() {
+	<div class="px-4 py-5 sm:p-6">
+		{ children... }
+	</div>
+}
+
+templ CardFooter() {
+	<div class="px-4 py-4 sm:px-6 bg-gray-50 border-t border-gray-200">
+		{ children... }
+	</div>
+}

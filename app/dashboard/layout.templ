@@ -1,0 +1,22 @@
+package dashboard
+
+import "github.com/abdul-hamid-achik/fuego-cloud/app/components"
+
+templ Layout(title string, currentPath string, userName string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ title } | Fuego Cloud</title>
+			<link href="/static/css/output.css" rel="stylesheet"/>
+			<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+		</head>
+		<body class="bg-gray-50 text-gray-900 min-h-screen">
+			@components.Nav(currentPath, userName)
+			<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
