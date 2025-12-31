@@ -1,0 +1,72 @@
+---
+- name: Wait for nodes to be ready
+  wait_for:
+    path: /tmp/node-ready
+    timeout: 300
+
+- name: Install K3s on master
+  when: "'master' in group_names"
+  block:
+    - name: Install K3s server
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_TOKEN="{{ k3s_token }}" \
+        INSTALL_K3S_VERSION="{{ k3s_version }}" \
+        sh -s - server \
+        --cluster-init \
+        --tls-san {{ ansible_host }} \
+        --tls-san {{ private_ip }} \
+        --node-ip {{ private_ip }} \
+        --advertise-address {{ private_ip }} \
+        --flannel-iface eth1 \
+        --cluster-cidr {{ k3s_cluster_cidr }} \
+        --service-cidr {{ k3s_service_cidr }} \
+        {% if k3s_disable_traefik %}--disable traefik{% endif %} \
+        {% if k3s_disable_servicelb %}--disable servicelb{% endif %}
+      args:
+        creates: /etc/rancher/k3s/k3s.yaml
+
+    - name: Wait for K3s to start
+      wait_for:
+        port: 6443
+        delay: 10
+        timeout: 300
+
+    - name: Fetch kubeconfig
+      fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: "{{ playbook_dir }}/../kubeconfig"
+        flat: yes
+
+    - name: Update kubeconfig server address
+      local_action:
+        module: replace
+        path: "{{ playbook_dir }}/../kubeconfig"
+        regexp: 'https://127.0.0.1:6443'
+        replace: 'https://{{ ansible_host }}:6443'
+
+- name: Install K3s on workers
+  when: "'workers' in group_names"
+  block:
+    - name: Get master private IP
+      set_fact:
+        master_private_ip: "{{ hostvars[groups['master'][0]]['private_ip'] }}"
+
+    - name: Install K3s agent
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_URL="https://{{ master_private_ip }}:6443" \
+        K3S_TOKEN="{{ k3s_token }}" \
+        INSTALL_K3S_VERSION="{{ k3s_version }}" \
+        sh -s - agent \
+        --node-ip {{ private_ip }} \
+        --flannel-iface eth1
+      args:
+        creates: /etc/rancher/k3s/agent.yaml
+
+- name: Wait for node to be ready
+  when: "'master' in group_names"
+  shell: kubectl get nodes --no-headers | grep -v NotReady | wc -l
+  register: ready_nodes
+  until: ready_nodes.stdout | int >= groups['k3s_cluster'] | length
+  retries: 30
+  delay: 10
+  changed_when: false
