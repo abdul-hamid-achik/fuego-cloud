@@ -1,0 +1,19 @@
+# Fuego Configuration
+port: 3000
+host: "0.0.0.0"
+
+# Directories
+app_dir: "app"
+static_dir: "static"
+static_path: "/static"
+
+# Development
+dev:
+  hot_reload: true
+  watch_extensions: [".go", ".templ", ".css"]
+  exclude_dirs: ["node_modules", ".git", "_*"]
+
+# Middleware
+middleware:
+  logger: true
+  recover: true

@@ -1,0 +1,57 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Build output
+bin/
+dist/
+tmp/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+vendor/
+go.work
+
+# Generated
+*_templ.go
+fuego_routes.go
+
+# Tailwind CSS output
+static/css/output.css
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# sqlc generated code (regenerate with: task generate)
+generated/
+
+# Database
+*.db
+*.sqlite
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage.out
+coverage.html
+
+# Air (hot reload)
+.air.toml

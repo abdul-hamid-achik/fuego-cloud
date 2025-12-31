@@ -1,0 +1,48 @@
+package app
+
+templ Page() {
+	@Layout("Home") {
+		<main class="min-h-screen flex items-center justify-center p-4">
+			<div class="max-w-2xl w-full">
+				<div class="text-center mb-12">
+					<h1 class="text-5xl font-bold text-gray-900 mb-4">
+						Welcome to Fuego
+					</h1>
+					<p class="text-xl text-gray-600">
+						A file-system based Go framework for APIs and websites.
+					</p>
+				</div>
+				<div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+					<h2 class="text-2xl font-semibold mb-4">Get Started</h2>
+					<ul class="space-y-3 text-gray-700">
+						<li class="flex items-start gap-3">
+							<span class="text-green-500 mt-1">✓</span>
+							<span>Edit <code class="bg-gray-100 px-2 py-0.5 rounded text-sm">app/page.templ</code> to modify this page</span>
+						</li>
+						<li class="flex items-start gap-3">
+							<span class="text-green-500 mt-1">✓</span>
+							<span>Add new pages in <code class="bg-gray-100 px-2 py-0.5 rounded text-sm">app/</code></span>
+						</li>
+						<li class="flex items-start gap-3">
+							<span class="text-green-500 mt-1">✓</span>
+							<span>API routes go in <code class="bg-gray-100 px-2 py-0.5 rounded text-sm">app/api/</code></span>
+						</li>
+					</ul>
+				</div>
+				<div class="bg-white rounded-xl shadow-lg p-8">
+					<h2 class="text-2xl font-semibold mb-4">HTMX Example</h2>
+					<p class="text-gray-600 mb-4">Click the button to fetch from the API:</p>
+					<button
+						class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-indigo-700 transition cursor-pointer"
+						hx-get="/api/health"
+						hx-target="#result"
+						hx-swap="innerHTML"
+					>
+						Check Health
+					</button>
+					<div id="result" class="mt-4 p-4 bg-gray-50 rounded-lg min-h-[60px]"></div>
+				</div>
+			</div>
+		</main>
+	}
+}

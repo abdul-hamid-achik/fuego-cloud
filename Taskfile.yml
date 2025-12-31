@@ -1,0 +1,105 @@
+version: '3'
+
+dotenv: ['.env']
+
+tasks:
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  dev:
+    desc: Start development server with hot reload
+    cmds:
+      - fuego dev
+
+  build:
+    desc: Build production binary
+    cmds:
+      - fuego build
+
+  generate:
+    desc: Generate sqlc code
+    cmds:
+      - $(go env GOBIN)/sqlc generate
+
+  migrate:
+    desc: Run database migrations
+    cmds:
+      - $(go env GOBIN)/migrate -path db/migrations -database "$DATABASE_URL" up
+
+  migrate:down:
+    desc: Rollback last migration
+    cmds:
+      - $(go env GOBIN)/migrate -path db/migrations -database "$DATABASE_URL" down 1
+
+  migrate:create:
+    desc: Create a new migration
+    cmds:
+      - $(go env GOBIN)/migrate create -ext sql -dir db/migrations -seq {{.CLI_ARGS}}
+
+  db:up:
+    desc: Start the database container
+    cmds:
+      - docker compose up -d db
+
+  db:down:
+    desc: Stop the database container
+    cmds:
+      - docker compose down
+
+  db:logs:
+    desc: Show database container logs
+    cmds:
+      - docker compose logs -f db
+
+  db:psql:
+    desc: Connect to database with psql
+    cmds:
+      - docker compose exec db psql -U neondb_owner -d neondb
+
+  setup:
+    desc: Set up local development environment
+    cmds:
+      - ./scripts/setup-local.sh
+
+  test:
+    desc: Run all tests
+    cmds:
+      - go test -v ./...
+
+  test:coverage:
+    desc: Run tests with coverage
+    cmds:
+      - go test -v -coverprofile=coverage.out ./...
+      - go tool cover -html=coverage.out -o coverage.html
+
+  lint:
+    desc: Run linter
+    cmds:
+      - golangci-lint run
+
+  fmt:
+    desc: Format code
+    cmds:
+      - go fmt ./...
+
+  tidy:
+    desc: Tidy go modules
+    cmds:
+      - go mod tidy
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf bin/ dist/ tmp/ coverage.out coverage.html
+
+  docker:build:
+    desc: Build Docker image
+    cmds:
+      - docker build -t ghcr.io/abdul-hamid-achik/fuego-cloud:latest .
+
+  docker:push:
+    desc: Push Docker image to GHCR
+    cmds:
+      - docker push ghcr.io/abdul-hamid-achik/fuego-cloud:latest
