@@ -225,3 +225,91 @@ func TestHashToken(t *testing.T) {
 		t.Error("expected same hash for same input")
 	}
 }
+
+func TestHashToken_NotReversible(t *testing.T) {
+	// This test ensures the hash is NOT just hex encoding (the old vulnerable implementation)
+	token := "fgt_abc123def456"
+	hash := HashToken(token)
+
+	// The old implementation would produce: hex.EncodeToString([]byte(token))
+	// which is reversible. The new implementation uses SHA-256.
+
+	// SHA-256 produces a 64-character hex string (256 bits = 32 bytes = 64 hex chars)
+	if len(hash) != 64 {
+		t.Errorf("expected SHA-256 hash length of 64, got %d", len(hash))
+	}
+
+	// Verify it's not just hex encoding of the input (old vulnerable behavior)
+	// Old behavior would have produced a much longer string for this input
+	oldVulnerableHash := make([]byte, len(token)*2)
+	for i, b := range []byte(token) {
+		oldVulnerableHash[i*2] = "0123456789abcdef"[b>>4]
+		oldVulnerableHash[i*2+1] = "0123456789abcdef"[b&0xf]
+	}
+
+	if hash == string(oldVulnerableHash) {
+		t.Error("SECURITY VULNERABILITY: HashToken is using reversible hex encoding instead of proper hashing")
+	}
+}
+
+func TestHashToken_UniqueOutputs(t *testing.T) {
+	// Different inputs should produce different hashes
+	tokens := []string{
+		"token1",
+		"token2",
+		"Token1",  // case sensitivity
+		"token1 ", // trailing space
+		" token1", // leading space
+		"fgt_abc123",
+		"fgt_abc124", // single char difference
+	}
+
+	hashes := make(map[string]string)
+	for _, token := range tokens {
+		hash := HashToken(token)
+		if existingToken, exists := hashes[hash]; exists {
+			t.Errorf("hash collision: %q and %q produce the same hash", token, existingToken)
+		}
+		hashes[hash] = token
+	}
+}
+
+func TestHashToken_Deterministic(t *testing.T) {
+	token := "fgt_deterministic_test_token_12345"
+
+	// Hash the same token multiple times
+	hashes := make([]string, 100)
+	for i := 0; i < 100; i++ {
+		hashes[i] = HashToken(token)
+	}
+
+	// All hashes should be identical
+	for i := 1; i < len(hashes); i++ {
+		if hashes[i] != hashes[0] {
+			t.Errorf("hash at index %d differs from hash at index 0", i)
+		}
+	}
+}
+
+func TestHashToken_EmptyInput(t *testing.T) {
+	hash := HashToken("")
+
+	// SHA-256 of empty string is a known value
+	// e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+	expectedEmptyHash := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+	if hash != expectedEmptyHash {
+		t.Errorf("expected SHA-256 of empty string, got %s", hash)
+	}
+}
+
+func TestHashToken_KnownValue(t *testing.T) {
+	// Test against a known SHA-256 hash to verify implementation
+	// SHA-256("hello") = 2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824
+	hash := HashToken("hello")
+	expected := "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"
+
+	if hash != expected {
+		t.Errorf("expected %s, got %s", expected, hash)
+	}
+}

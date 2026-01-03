@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"time"
@@ -104,6 +105,10 @@ func GenerateState() (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
+// HashToken creates a secure SHA-256 hash of the token.
+// This is used to store API tokens securely in the database.
+// The hash is one-way and cannot be reversed to obtain the original token.
 func HashToken(token string) string {
-	return hex.EncodeToString([]byte(token))
+	hash := sha256.Sum256([]byte(token))
+	return hex.EncodeToString(hash[:])
 }

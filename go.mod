@@ -3,14 +3,15 @@ module github.com/abdul-hamid-achik/fuego-cloud
 go 1.25.5
 
 require (
-	github.com/a-h/templ v0.3.960
-	github.com/abdul-hamid-achik/fuego v0.9.10
+	github.com/a-h/templ v0.3.977
+	github.com/abdul-hamid-achik/fuego v0.11.0
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/crypto v0.46.0
 	golang.org/x/oauth2 v0.34.0
+	golang.org/x/time v0.14.0
 	k8s.io/api v0.35.0
 	k8s.io/apimachinery v0.35.0
 	k8s.io/client-go v0.35.0
@@ -62,7 +63,6 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/term v0.38.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
-	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
@@ -75,3 +75,5 @@ require (
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
+
+replace github.com/abdul-hamid-achik/fuego => /Users/abdulachik/projects/fuego
