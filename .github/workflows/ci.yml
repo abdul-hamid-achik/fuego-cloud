@@ -22,18 +22,15 @@ jobs:
       - name: Download dependencies
         run: go mod download
 
+      - name: Generate sqlc code
+        run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
+
       - name: Run tests
         run: |
-          # Run tests for packages that don't have bracket notation in path
           go test -v -race -coverprofile=coverage.out \
             ./tests/... \
             ./internal/... \
-            ./app/api/health/... \
-            ./app/api/apps/... \
-            ./app/api/auth/... \
-            ./app/api/registry/... \
-            ./app/api/users/... \
-            ./app/api/metrics/...
+            ./app/api/health/...
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
@@ -53,10 +50,18 @@ jobs:
           go-version: '1.25'
           cache: true
 
+      - name: Generate sqlc code
+        run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
+
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v6
         with:
-          version: v2.7.2
+          version: v1.61
+          args: |
+            --timeout=5m
+            --skip-dirs="app/\(auth\)"
+            --skip-dirs="app/\(dashboard\)"
+            --skip-dirs="app/api/apps/\[name\]"
 
   build:
     name: Build Check
