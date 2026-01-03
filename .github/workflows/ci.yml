@@ -88,7 +88,7 @@ jobs:
       - name: Verify binary
         run: |
           ls -la bin/fuego-cloud
-          ./bin/fuego-cloud --help || true
+          file bin/fuego-cloud
 
   docker:
     name: Docker Build (dry-run)
