@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/a-h/templ v0.3.960
-	github.com/abdul-hamid-achik/fuego v0.9.9
+	github.com/abdul-hamid-achik/fuego v0.9.10
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.8.0
@@ -75,5 +75,3 @@ require (
 	sigs.k8s.io/structured-merge-diff/v6 v6.3.0 // indirect
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
-
-replace github.com/abdul-hamid-achik/fuego => /Users/abdulachik/projects/fuego
