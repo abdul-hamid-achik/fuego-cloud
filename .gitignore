@@ -29,6 +29,7 @@ go.work
 # Generated
 *_templ.go
 fuego_routes.go
+.fuego/
 
 # Tailwind CSS output
 static/css/output.css

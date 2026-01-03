@@ -4,7 +4,7 @@ go 1.25.5
 
 require (
 	github.com/a-h/templ v0.3.960
-	github.com/abdul-hamid-achik/fuego v0.9.5
+	github.com/abdul-hamid-achik/fuego v0.9.9
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.8.0
