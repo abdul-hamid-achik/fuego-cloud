@@ -11,7 +11,7 @@ import (
 )
 
 type Client struct {
-	clientset       *kubernetes.Clientset
+	clientset       kubernetes.Interface
 	config          *rest.Config
 	namespacePrefix string
 }
@@ -34,6 +34,15 @@ func NewClient(kubeconfig, namespacePrefix string) (*Client, error) {
 	}, nil
 }
 
+// NewClientWithInterface creates a Client with a provided kubernetes.Interface
+// This is useful for testing with fake clients
+func NewClientWithInterface(clientset kubernetes.Interface, namespacePrefix string) *Client {
+	return &Client{
+		clientset:       clientset,
+		namespacePrefix: namespacePrefix,
+	}
+}
+
 func getConfig(kubeconfig string) (*rest.Config, error) {
 	if kubeconfig != "" {
 		return clientcmd.BuildConfigFromFlags("", kubeconfig)
@@ -54,7 +63,7 @@ func getConfig(kubeconfig string) (*rest.Config, error) {
 	return rest.InClusterConfig()
 }
 
-func (c *Client) Clientset() *kubernetes.Clientset {
+func (c *Client) Clientset() kubernetes.Interface {
 	return c.clientset
 }
 
