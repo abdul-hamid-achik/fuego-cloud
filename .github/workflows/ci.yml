@@ -53,12 +53,13 @@ jobs:
       - name: Generate sqlc code
         run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
 
+      - name: Install golangci-lint from source
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: latest
+        run: |
           # Only lint packages without bracket notation in paths
-          args: ./internal/... ./tests/... ./app/api/health/... ./app/api/metrics/...
+          golangci-lint run ./internal/... ./tests/... ./app/api/health/... ./app/api/metrics/...
 
   build:
     name: Build Check
