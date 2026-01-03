@@ -27,6 +27,9 @@ RETURNING *;
 -- name: DeleteUser :exec
 DELETE FROM users WHERE id = $1;
 
+-- name: UpdateUserEmail :exec
+UPDATE users SET email = $2 WHERE id = $1;
+
 -- name: ListUsers :many
 SELECT * FROM users
 ORDER BY created_at DESC
