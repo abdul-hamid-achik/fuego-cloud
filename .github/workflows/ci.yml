@@ -56,7 +56,7 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.61
+          version: latest
           # Only lint packages without bracket notation in paths
           args: ./internal/... ./tests/... ./app/api/health/... ./app/api/metrics/...
 
