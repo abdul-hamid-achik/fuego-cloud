@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/abdul-hamid-achik/fuego-cloud/app/api"
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -35,6 +36,19 @@ func main() {
 
 	app := fuego.New()
 
+	// Add security middleware stack
+	app.Use(api.RecoveryMiddleware())        // Panic recovery (outermost)
+	app.Use(api.RequestIDMiddleware())       // Request ID tracking
+	app.Use(api.RequestLoggingMiddleware())  // Request logging
+	app.Use(api.SecurityHeadersMiddleware()) // Security headers
+	app.Use(api.RateLimitMiddleware())       // Rate limiting
+	app.Use(api.CORSMiddleware([]string{     // CORS
+		"http://localhost:3000",
+		"http://localhost:5173",
+		"https://cloud.fuego.build",
+	}))
+
+	// Inject dependencies
 	app.Use(func(next fuego.HandlerFunc) fuego.HandlerFunc {
 		return func(c *fuego.Context) error {
 			c.Set("db", pool)

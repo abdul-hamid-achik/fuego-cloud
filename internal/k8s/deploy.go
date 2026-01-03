@@ -193,3 +193,90 @@ func (c *Client) GetIngress(ctx context.Context, appName string) (*networkingv1.
 	namespace := c.NamespaceForApp(appName)
 	return c.clientset.NetworkingV1().Ingresses(namespace).Get(ctx, appName, metav1.GetOptions{})
 }
+
+// RestartApp performs a rolling restart of the deployment by updating an annotation
+func (c *Client) RestartApp(ctx context.Context, appName string) error {
+	namespace := c.NamespaceForApp(appName)
+	deployments := c.clientset.AppsV1().Deployments(namespace)
+
+	deployment, err := deployments.Get(ctx, appName, metav1.GetOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to get deployment: %w", err)
+	}
+
+	// Add/update restart annotation to trigger rolling restart
+	if deployment.Spec.Template.Annotations == nil {
+		deployment.Spec.Template.Annotations = make(map[string]string)
+	}
+	deployment.Spec.Template.Annotations["kubectl.kubernetes.io/restartedAt"] = time.Now().Format(time.RFC3339)
+
+	_, err = deployments.Update(ctx, deployment, metav1.UpdateOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to update deployment: %w", err)
+	}
+
+	return nil
+}
+
+// ScaleApp scales the deployment to the specified number of replicas
+func (c *Client) ScaleApp(ctx context.Context, appName string, replicas int32) error {
+	namespace := c.NamespaceForApp(appName)
+	deployments := c.clientset.AppsV1().Deployments(namespace)
+
+	deployment, err := deployments.Get(ctx, appName, metav1.GetOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to get deployment: %w", err)
+	}
+
+	deployment.Spec.Replicas = &replicas
+
+	_, err = deployments.Update(ctx, deployment, metav1.UpdateOptions{})
+	if err != nil {
+		return fmt.Errorf("failed to scale deployment: %w", err)
+	}
+
+	return nil
+}
+
+// GetAppStatus returns the current status of an app
+type AppStatus struct {
+	Status            string   `json:"status"`
+	Replicas          int32    `json:"replicas"`
+	ReadyReplicas     int32    `json:"ready_replicas"`
+	AvailableReplicas int32    `json:"available_replicas"`
+	Conditions        []string `json:"conditions,omitempty"`
+}
+
+func (c *Client) GetAppStatus(ctx context.Context, appName string) (*AppStatus, error) {
+	deployment, err := c.GetDeploymentStatus(ctx, appName)
+	if err != nil {
+		if k8serrors.IsNotFound(err) {
+			return &AppStatus{Status: "not_deployed"}, nil
+		}
+		return nil, err
+	}
+
+	status := &AppStatus{
+		Replicas:          *deployment.Spec.Replicas,
+		ReadyReplicas:     deployment.Status.ReadyReplicas,
+		AvailableReplicas: deployment.Status.AvailableReplicas,
+	}
+
+	// Determine status based on conditions
+	if deployment.Status.ReadyReplicas == *deployment.Spec.Replicas {
+		status.Status = "running"
+	} else if deployment.Status.ReadyReplicas > 0 {
+		status.Status = "partially_ready"
+	} else if deployment.Status.AvailableReplicas == 0 {
+		status.Status = "starting"
+	} else {
+		status.Status = "unknown"
+	}
+
+	// Add conditions
+	for _, cond := range deployment.Status.Conditions {
+		status.Conditions = append(status.Conditions, fmt.Sprintf("%s: %s", cond.Type, cond.Status))
+	}
+
+	return status, nil
+}
