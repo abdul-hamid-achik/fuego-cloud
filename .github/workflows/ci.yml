@@ -74,8 +74,10 @@ jobs:
           go-version: '1.25'
           cache: true
 
-      - name: Install fuego CLI
-        run: go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest
+      - name: Install build tools
+        run: |
+          go install github.com/a-h/templ/cmd/templ@latest
+          go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest
 
       - name: Build with fuego
         run: fuego build
