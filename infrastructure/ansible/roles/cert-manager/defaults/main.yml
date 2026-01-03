@@ -1,0 +1,14 @@
+---
+# cert-manager version
+cert_manager_version: "v1.14.4"
+
+# Let's Encrypt settings
+letsencrypt_email: "{{ admin_email | default('admin@fuego.build') }}"
+letsencrypt_server: "https://acme-v02.api.letsencrypt.org/directory"
+letsencrypt_staging_server: "https://acme-staging-v02.api.letsencrypt.org/directory"
+
+# Use staging for testing (set to false in production)
+use_staging: false
+
+# Namespace for cert-manager
+cert_manager_namespace: "cert-manager"

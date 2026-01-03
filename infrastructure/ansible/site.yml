@@ -12,3 +12,34 @@
   gather_facts: false
   roles:
     - role: traefik
+
+- name: Install cert-manager for TLS
+  hosts: master
+  become: true
+  gather_facts: false
+  roles:
+    - role: cert-manager
+  tags:
+    - cert-manager
+    - tls
+
+- name: Install sealed-secrets for encrypted secrets
+  hosts: master
+  become: true
+  gather_facts: false
+  roles:
+    - role: sealed-secrets
+  tags:
+    - sealed-secrets
+    - security
+
+- name: Install monitoring stack
+  hosts: master
+  become: true
+  gather_facts: false
+  roles:
+    - role: monitoring
+  tags:
+    - monitoring
+    - prometheus
+    - grafana

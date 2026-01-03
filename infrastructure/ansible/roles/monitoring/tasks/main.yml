@@ -1,0 +1,131 @@
+---
+- name: Add prometheus-community Helm repo
+  kubernetes.core.helm_repository:
+    name: prometheus-community
+    repo_url: "https://prometheus-community.github.io/helm-charts"
+    state: present
+
+- name: Create monitoring namespace
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: "{{ monitoring_namespace }}"
+        labels:
+          name: monitoring
+
+- name: Install kube-prometheus-stack via Helm
+  kubernetes.core.helm:
+    name: prometheus
+    chart_ref: prometheus-community/kube-prometheus-stack
+    chart_version: "{{ prometheus_stack_version }}"
+    release_namespace: "{{ monitoring_namespace }}"
+    create_namespace: true
+    wait: true
+    timeout: 10m
+    values:
+      prometheus:
+        prometheusSpec:
+          retention: "{{ prometheus_retention }}"
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: "{{ prometheus_storage_size }}"
+          # Scrape fuego-cloud apps
+          additionalScrapeConfigs:
+            - job_name: 'fuego-cloud-apps'
+              kubernetes_sd_configs:
+                - role: pod
+                  namespaces:
+                    names: []
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+                  action: keep
+                  regex: true
+                - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+                  action: replace
+                  target_label: __metrics_path__
+                  regex: (.+)
+                - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+                  action: replace
+                  regex: ([^:]+)(?::\d+)?;(\d+)
+                  replacement: $1:$2
+                  target_label: __address__
+      
+      grafana:
+        enabled: true
+        adminPassword: "{{ grafana_admin_password }}"
+        ingress:
+          enabled: true
+          ingressClassName: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: letsencrypt-prod
+          hosts:
+            - "{{ grafana_ingress_host }}"
+          tls:
+            - secretName: grafana-tls
+              hosts:
+                - "{{ grafana_ingress_host }}"
+        # Pre-install Fuego Cloud dashboard
+        dashboardProviders:
+          dashboardproviders.yaml:
+            apiVersion: 1
+            providers:
+              - name: 'fuego-cloud'
+                orgId: 1
+                folder: 'Fuego Cloud'
+                type: file
+                disableDeletion: false
+                editable: true
+                options:
+                  path: /var/lib/grafana/dashboards/fuego-cloud
+
+      alertmanager:
+        enabled: "{{ alertmanager_enabled }}"
+        alertmanagerSpec:
+          storage:
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 1Gi
+
+- name: Create Fuego Cloud ServiceMonitor
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      metadata:
+        name: fuego-cloud-platform
+        namespace: "{{ monitoring_namespace }}"
+        labels:
+          release: prometheus
+      spec:
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: fuego-cloud
+        namespaceSelector:
+          matchNames:
+            - default
+        endpoints:
+          - port: http
+            path: /api/metrics
+            interval: 30s
+
+- name: Display Grafana access info
+  ansible.builtin.debug:
+    msg: |
+      Monitoring stack installed!
+      
+      Grafana URL: https://{{ grafana_ingress_host }}
+      Admin user: admin
+      Admin password: {{ grafana_admin_password }}
+      
+      Save this password securely!

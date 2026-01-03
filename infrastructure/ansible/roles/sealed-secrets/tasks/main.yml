@@ -1,0 +1,57 @@
+---
+- name: Add sealed-secrets Helm repo
+  kubernetes.core.helm_repository:
+    name: sealed-secrets
+    repo_url: "https://bitnami-labs.github.io/sealed-secrets"
+    state: present
+
+- name: Install sealed-secrets via Helm
+  kubernetes.core.helm:
+    name: sealed-secrets
+    chart_ref: sealed-secrets/sealed-secrets
+    chart_version: "{{ sealed_secrets_version }}"
+    release_namespace: "{{ sealed_secrets_namespace }}"
+    create_namespace: false
+    wait: true
+    values:
+      fullnameOverride: "{{ sealed_secrets_controller_name }}"
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+
+- name: Wait for sealed-secrets controller to be ready
+  kubernetes.core.k8s_info:
+    api_version: apps/v1
+    kind: Deployment
+    name: "{{ sealed_secrets_controller_name }}"
+    namespace: "{{ sealed_secrets_namespace }}"
+  register: controller_deployment
+  until: controller_deployment.resources[0].status.readyReplicas | default(0) >= 1
+  retries: 30
+  delay: 10
+
+- name: Fetch sealed-secrets public key
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ sealed_secrets_controller_name }}-key"
+    namespace: "{{ sealed_secrets_namespace }}"
+  register: sealed_secrets_key
+
+- name: Display sealed-secrets public certificate info
+  ansible.builtin.debug:
+    msg: |
+      Sealed Secrets controller is ready!
+      
+      To seal secrets locally, install kubeseal:
+        brew install kubeseal
+      
+      Then seal a secret:
+        kubectl create secret generic mysecret --dry-run=client -o yaml | \
+          kubeseal --controller-name={{ sealed_secrets_controller_name }} \
+                   --controller-namespace={{ sealed_secrets_namespace }} \
+                   --format yaml > mysealedsecret.yaml

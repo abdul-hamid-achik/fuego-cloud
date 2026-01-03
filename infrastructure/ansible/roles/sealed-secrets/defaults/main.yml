@@ -1,0 +1,9 @@
+---
+# Sealed Secrets version
+sealed_secrets_version: "2.15.0"
+
+# Namespace for sealed-secrets controller
+sealed_secrets_namespace: "kube-system"
+
+# Controller name
+sealed_secrets_controller_name: "sealed-secrets-controller"

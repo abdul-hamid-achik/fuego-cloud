@@ -1,0 +1,142 @@
+package apps
+
+import (
+	"fmt"
+
+	"github.com/abdul-hamid-achik/fuego-cloud/app/components"
+)
+
+type AppsPageData struct {
+	UserName string
+	Apps     []AppItem
+}
+
+type AppItem struct {
+	ID              string
+	Name            string
+	Status          string
+	Region          string
+	Size            string
+	DeploymentCount int
+	URL             string
+}
+
+templ Page(data AppsPageData) {
+	@Layout("Apps", "/apps", data.UserName) {
+		<div class="px-4 py-6 sm:px-0">
+			<div class="flex items-center justify-between mb-6">
+				<h1 class="text-2xl font-semibold text-gray-900">Your Apps</h1>
+				<button
+					hx-get="/apps/new"
+					hx-target="#modal-container"
+					hx-swap="innerHTML"
+					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+				>
+					<svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+					</svg>
+					New App
+				</button>
+			</div>
+			if len(data.Apps) == 0 {
+				@EmptyState()
+			} else {
+				@AppsList(data.Apps)
+			}
+		</div>
+		<div id="modal-container"></div>
+	}
+}
+
+templ EmptyState() {
+	<div class="text-center py-12">
+		<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+		</svg>
+		<h3 class="mt-2 text-sm font-medium text-gray-900">No apps</h3>
+		<p class="mt-1 text-sm text-gray-500">Get started by creating a new app.</p>
+		<div class="mt-6">
+			<button
+				hx-get="/apps/new"
+				hx-target="#modal-container"
+				hx-swap="innerHTML"
+				class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+			>
+				<svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+				</svg>
+				New App
+			</button>
+		</div>
+	</div>
+}
+
+templ AppsList(apps []AppItem) {
+	<div class="bg-white shadow overflow-hidden sm:rounded-md">
+		<ul role="list" class="divide-y divide-gray-200">
+			for _, app := range apps {
+				<li>
+					<a href={ templ.URL("/apps/" + app.Name) } class="block hover:bg-gray-50">
+						<div class="px-4 py-4 sm:px-6">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center min-w-0">
+									<div class="flex-shrink-0">
+										<div class="h-10 w-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+											<span class="text-white font-bold text-lg">
+												{ string([]rune(app.Name)[0]) }
+											</span>
+										</div>
+									</div>
+									<div class="ml-4 truncate">
+										<p class="text-sm font-medium text-indigo-600 truncate">{ app.Name }</p>
+										<p class="text-sm text-gray-500">
+											{ app.Region } · { app.Size }
+										</p>
+									</div>
+								</div>
+								<div class="flex items-center space-x-4">
+									@components.Badge(components.DeploymentStatusBadge(app.Status), app.Status)
+									<div class="text-sm text-gray-500">
+										{ intToString(app.DeploymentCount) } deployments
+									</div>
+									<svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+									</svg>
+								</div>
+							</div>
+							<div class="mt-2 flex items-center text-sm text-gray-500">
+								<svg class="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+								</svg>
+								<a href={ templ.URL(app.URL) } target="_blank" class="hover:text-indigo-600">{ app.URL }</a>
+							</div>
+						</div>
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+templ Layout(title string, currentPath string, userName string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ title } | Fuego Cloud</title>
+			<link href="/static/css/output.css" rel="stylesheet"/>
+			<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+		</head>
+		<body class="bg-gray-50 text-gray-900 min-h-screen">
+			@components.Nav(currentPath, userName)
+			<main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+				{ children... }
+			</main>
+		</body>
+	</html>
+}
+
+func intToString(n int) string {
+	return fmt.Sprintf("%d", n)
+}
