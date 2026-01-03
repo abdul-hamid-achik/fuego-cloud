@@ -79,6 +79,9 @@ jobs:
           go install github.com/a-h/templ/cmd/templ@latest
           go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest
 
+      - name: Generate sqlc code
+        run: go run github.com/sqlc-dev/sqlc/cmd/sqlc@latest generate
+
       - name: Build with fuego
         run: fuego build
 
