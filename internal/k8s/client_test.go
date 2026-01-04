@@ -118,9 +118,9 @@ users:
 	t.Setenv("KUBECONFIG", kubeconfigPath)
 	defer func() {
 		if oldKubeconfig != "" {
-			os.Setenv("KUBECONFIG", oldKubeconfig)
+			_ = os.Setenv("KUBECONFIG", oldKubeconfig)
 		} else {
-			os.Unsetenv("KUBECONFIG")
+			_ = os.Unsetenv("KUBECONFIG")
 		}
 	}()
 
@@ -250,7 +250,7 @@ users:
 	// Test Config getter
 	config := client.Config()
 	if config == nil {
-		t.Error("Config() returned nil")
+		t.Fatal("Config() returned nil")
 	}
 	if config.Host != "https://localhost:6443" {
 		t.Errorf("expected host https://localhost:6443, got %s", config.Host)

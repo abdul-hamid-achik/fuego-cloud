@@ -122,7 +122,7 @@ func streamLogs(c *fuego.Context, k8sClient *k8s.Client, appName string, tailLin
 				return nil
 			}
 			data, _ := json.Marshal(log)
-			fmt.Fprintf(c.Response, "data: %s\n\n", data)
+			_, _ = fmt.Fprintf(c.Response, "data: %s\n\n", data)
 			flusher.Flush()
 		}
 	}

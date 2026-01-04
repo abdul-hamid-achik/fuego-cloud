@@ -410,7 +410,7 @@ func TestMockQueries_CreateApp(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 	userID := uuid.New()
 
-	app, err := queries.CreateApp(nil, db.CreateAppParams{
+	app, err := queries.CreateApp(context.TODO(), db.CreateAppParams{
 		UserID: userID,
 		Name:   "newapp",
 		Region: "mex",
@@ -448,7 +448,7 @@ func TestMockQueries_UpdateApp(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 
 	t.Run("app exists", func(t *testing.T) {
-		updated, err := queries.UpdateApp(nil, db.UpdateAppParams{
+		updated, err := queries.UpdateApp(context.TODO(), db.UpdateAppParams{
 			ID:     appID,
 			Name:   "updated-app",
 			Region: "qro",
@@ -466,7 +466,7 @@ func TestMockQueries_UpdateApp(t *testing.T) {
 	})
 
 	t.Run("app not found", func(t *testing.T) {
-		_, err := queries.UpdateApp(nil, db.UpdateAppParams{
+		_, err := queries.UpdateApp(context.TODO(), db.UpdateAppParams{
 			ID:     uuid.New(),
 			Name:   "updated-app",
 			Region: "qro",
@@ -487,7 +487,7 @@ func TestMockQueries_DeleteApp(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 
 	t.Run("app exists", func(t *testing.T) {
-		err := queries.DeleteApp(nil, appID)
+		err := queries.DeleteApp(context.TODO(), appID)
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
 		}
@@ -497,7 +497,7 @@ func TestMockQueries_DeleteApp(t *testing.T) {
 	})
 
 	t.Run("app not found", func(t *testing.T) {
-		err := queries.DeleteApp(nil, uuid.New())
+		err := queries.DeleteApp(context.TODO(), uuid.New())
 		if err == nil {
 			t.Error("expected error for non-existent app")
 		}
@@ -515,7 +515,7 @@ func TestMockQueries_ListDeploymentsByApp(t *testing.T) {
 
 	queries := NewMockQueries(mockDB)
 
-	deployments, err := queries.ListDeploymentsByApp(nil, db.ListDeploymentsByAppParams{
+	deployments, err := queries.ListDeploymentsByApp(context.TODO(), db.ListDeploymentsByAppParams{
 		AppID: appID,
 	})
 	if err != nil {
@@ -537,7 +537,7 @@ func TestMockQueries_ListDomainsByApp(t *testing.T) {
 
 	queries := NewMockQueries(mockDB)
 
-	domains, err := queries.ListDomainsByApp(nil, appID)
+	domains, err := queries.ListDomainsByApp(context.TODO(), appID)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}

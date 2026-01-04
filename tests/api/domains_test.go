@@ -73,7 +73,7 @@ func TestDomainOperations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	t.Run("create domain", func(t *testing.T) {
 		domainName := "test-" + uuid.New().String()[:8] + ".example.com"
@@ -242,7 +242,7 @@ func TestDomainUniqueness(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app1.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app1.ID) }()
 
 	app2, err := testQueries.CreateApp(ctx, db.CreateAppParams{
 		UserID: userID,
@@ -253,7 +253,7 @@ func TestDomainUniqueness(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app2.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app2.ID) }()
 
 	// Create domain on app1
 	domainName := "unique-" + uuid.New().String()[:8] + ".example.com"
@@ -264,7 +264,7 @@ func TestDomainUniqueness(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateDomain failed: %v", err)
 	}
-	defer testQueries.DeleteDomain(ctx, domain.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 	// Try to create same domain on app2 - should fail due to unique constraint
 	_, err = testQueries.CreateDomain(ctx, db.CreateDomainParams{
@@ -295,7 +295,7 @@ func TestDomainOwnership(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	domainName := "ownership-" + uuid.New().String()[:8] + ".example.com"
 	domain, err := testQueries.CreateDomain(ctx, db.CreateDomainParams{
@@ -305,7 +305,7 @@ func TestDomainOwnership(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateDomain failed: %v", err)
 	}
-	defer testQueries.DeleteDomain(ctx, domain.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 	// Verify ownership
 	if domain.AppID != app.ID {

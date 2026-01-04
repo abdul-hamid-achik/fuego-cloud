@@ -20,7 +20,7 @@ func clearConfigEnv(t *testing.T) {
 		"PLATFORM_DOMAIN", "APPS_DOMAIN_SUFFIX",
 	}
 	for _, env := range envVars {
-		os.Unsetenv(env)
+		_ = os.Unsetenv(env)
 	}
 }
 

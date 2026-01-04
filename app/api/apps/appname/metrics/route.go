@@ -92,9 +92,10 @@ func Get(c *fuego.Context) error {
 	var successful, failed int
 	var lastDeploy time.Time
 	for _, d := range deployments {
-		if d.Status == "ready" || d.Status == "running" {
+		switch d.Status {
+		case "ready", "running":
 			successful++
-		} else if d.Status == "failed" {
+		case "failed":
 			failed++
 		}
 		if lastDeploy.IsZero() || d.CreatedAt.After(lastDeploy) {
@@ -118,7 +119,7 @@ func Get(c *fuego.Context) error {
 	}
 
 	// Calculate uptime based on ready pods
-	var uptimePercent float64 = 100.0
+	uptimePercent := 100.0
 	if podCount > 0 {
 		uptimePercent = (float64(readyPods) / float64(podCount)) * 100
 	}

@@ -81,7 +81,7 @@ func (c *Client) CreateCNAME(ctx context.Context, subdomain, target string) (*DN
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -128,7 +128,7 @@ func (c *Client) DeleteRecord(ctx context.Context, recordID string) error {
 	if err != nil {
 		return fmt.Errorf("failed to make request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -164,7 +164,7 @@ func (c *Client) GetRecordByName(ctx context.Context, name string) (*DNSRecord, 
 	if err != nil {
 		return nil, fmt.Errorf("failed to make request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {

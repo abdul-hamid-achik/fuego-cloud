@@ -364,7 +364,7 @@ func TestActivityLogOperations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	t.Run("create activity log", func(t *testing.T) {
 		log, err := testQueries.CreateActivityLog(ctx, db.CreateActivityLogParams{

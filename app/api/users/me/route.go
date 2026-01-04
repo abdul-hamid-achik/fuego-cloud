@@ -7,7 +7,6 @@ import (
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -50,11 +49,6 @@ func Get(c *fuego.Context) error {
 		AvatarURL: user.AvatarUrl,
 		Plan:      user.Plan,
 	})
-}
-
-func getUserIDFromContext(c *fuego.Context) (uuid.UUID, bool) {
-	userID, ok := c.Get("user_id").(uuid.UUID)
-	return userID, ok
 }
 
 // UpdateUserRequest represents the update request body

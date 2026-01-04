@@ -7,33 +7,33 @@ package main
 import (
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 
-	health "github.com/abdul-hamid-achik/fuego-cloud/app/api/health"
-	dashboard "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard"
+	app_page "github.com/abdul-hamid-achik/fuego-cloud/app"
+	callback2 "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/callback"
+	login_page "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/login"
+	logout "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/logout"
+	apps "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps"
+	name "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname"
 	activity "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/activity"
 	deployments "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/deployments"
-	verify "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain/verify"
-	scale "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/scale"
-	callback2 "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/callback"
-	logout "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/logout"
-	name2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps/appname"
-	login_page "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/login"
-	domain "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain"
-	domains "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains"
-	env "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/env"
-	name "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname"
-	metrics2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/metrics"
-	apps2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps"
-	app_page "github.com/abdul-hamid-achik/fuego-cloud/app"
 	id "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/deployments/byid"
+	domains "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains"
+	domain "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain"
+	verify "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain/verify"
+	env "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/env"
+	logs "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/logs"
 	metrics "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/metrics"
 	restart "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/restart"
-	callback "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/callback"
+	scale "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/scale"
 	auth "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth"
+	callback "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/callback"
 	token "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/token"
+	health "github.com/abdul-hamid-achik/fuego-cloud/app/api/health"
+	metrics2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/metrics"
 	token2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/registry/token"
 	me "github.com/abdul-hamid-achik/fuego-cloud/app/api/users/me"
-	logs "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/logs"
-	apps "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps"
+	dashboard "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard"
+	apps2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps"
+	name2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps/appname"
 )
 
 // RegisterRoutes registers all file-based routes with the app.
@@ -105,20 +105,20 @@ func RegisterRoutes(app *fuego.App) {
 	app.RegisterRoute("GET", "/api/users/me", me.Get)
 	// PUT /api/users/me (from app/api/users/me/route.go)
 	app.RegisterRoute("PUT", "/api/users/me", me.Put)
-	// GET /auth_routes/callback (from app/auth_routes/callback/route.go)
-	app.RegisterRoute("GET", "/auth_routes/callback", callback2.Get)
-	// POST /auth_routes/logout (from app/auth_routes/logout/route.go)
-	app.RegisterRoute("POST", "/auth_routes/logout", logout.Post)
-	// GET /auth_routes/logout (from app/auth_routes/logout/route.go)
-	app.RegisterRoute("GET", "/auth_routes/logout", logout.Get)
+	// GET /callback (from app/_auth_/callback/route.go)
+	app.RegisterRoute("GET", "/callback", callback2.Get)
+	// POST /logout (from app/_auth_/logout/route.go)
+	app.RegisterRoute("POST", "/logout", logout.Post)
+	// GET /logout (from app/_auth_/logout/route.go)
+	app.RegisterRoute("GET", "/logout", logout.Get)
 	// GET /dashboard/apps/appname (from app/dashboard/apps/appname/route.go)
 	app.RegisterRoute("GET", "/dashboard/apps/appname", name2.Get)
 	// GET /dashboard/apps (from app/dashboard/apps/route.go)
 	app.RegisterRoute("GET", "/dashboard/apps", apps2.Get)
 	// GET /dashboard (from app/dashboard/route.go)
 	app.RegisterRoute("GET", "/dashboard", dashboard.Get)
-	// Page: /auth_routes/login (from app/auth_routes/login/page.templ)
-	app.Get("/auth_routes/login", func(c *fuego.Context) error {
+	// Page: /login (from app/_auth_/login/page.templ)
+	app.Get("/login", func(c *fuego.Context) error {
 		return fuego.TemplComponent(c, 200, login_page.Page())
 	})
 	// Page: / (from app/page.templ)

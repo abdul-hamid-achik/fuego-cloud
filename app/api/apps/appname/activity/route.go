@@ -96,10 +96,9 @@ func Get(c *fuego.Context) error {
 			CreatedAt: log.CreatedAt.Format("2006-01-02T15:04:05Z07:00"),
 		}
 
-		if log.Details != nil {
-			// Details is JSONB stored as []byte, needs to be parsed
-			// For now, we'll leave it as nil if parsing fails
-		}
+		// Details is JSONB stored as []byte, needs to be parsed
+		// For now, we'll leave it as nil if parsing fails
+		_ = log.Details
 
 		if log.IpAddress != nil {
 			entry.IPAddress = log.IpAddress.String()
