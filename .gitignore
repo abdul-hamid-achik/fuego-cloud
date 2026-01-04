@@ -57,3 +57,16 @@ coverage.html
 # Air (hot reload)
 .air.toml
 fuego-cloud
+
+# Terraform
+infrastructure/terraform/.terraform/
+infrastructure/terraform/*.tfstate
+infrastructure/terraform/*.tfstate.backup
+infrastructure/terraform/terraform.tfvars
+infrastructure/terraform/.terraform.lock.hcl
+
+# Ansible
+infrastructure/ansible/inventory.ini
+
+# Kubernetes secrets (contains sensitive data)
+k8s/secret.yaml

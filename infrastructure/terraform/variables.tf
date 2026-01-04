@@ -29,10 +29,10 @@ variable "location" {
 variable "server_type" {
   description = "Server type for K3s nodes"
   type        = string
-  default     = "cx22"
+  default     = "cx23"
 
   validation {
-    condition     = contains(["cx22", "cx32", "cx42", "cx52", "cpx21", "cpx31", "cpx41", "cpx51"], var.server_type)
+    condition     = contains(["cx23", "cx33", "cx43", "cx53", "cpx11", "cpx21", "cpx31", "cpx41", "cpx51"], var.server_type)
     error_message = "Server type must be a valid Hetzner Cloud server type."
   }
 }
