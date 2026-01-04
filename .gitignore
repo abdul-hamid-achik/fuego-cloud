@@ -48,7 +48,7 @@ generated/
 
 # Logs
 *.log
-logs/
+/logs/
 
 # Coverage
 coverage.out
