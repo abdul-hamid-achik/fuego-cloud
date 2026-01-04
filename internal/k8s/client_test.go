@@ -314,6 +314,9 @@ users:
 	if err != nil {
 		t.Fatal(err)
 	}
+	if config == nil {
+		t.Fatal("expected non-nil config")
+	}
 	if config.Host != "https://explicit:6443" {
 		t.Errorf("expected explicit config host, got %s", config.Host)
 	}

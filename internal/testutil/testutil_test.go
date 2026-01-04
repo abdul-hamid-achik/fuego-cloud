@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -120,7 +121,7 @@ func TestParseResponse(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	w.WriteString(`{"id":"123","name":"test"}`)
+	_, _ = w.WriteString(`{"id":"123","name":"test"}`)
 
 	result := ParseResponse[TestResponse](t, w)
 
@@ -145,7 +146,7 @@ func TestAssertStatusCode(t *testing.T) {
 func TestAssertJSONContains(t *testing.T) {
 	t.Run("key exists with correct value", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		w.WriteString(`{"status":"success","message":"done"}`)
+		_, _ = w.WriteString(`{"status":"success","message":"done"}`)
 
 		// This should not fail
 		AssertJSONContains(t, w, "status", "success")
@@ -311,7 +312,7 @@ func TestMockQueries_GetUserByGithubID(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 
 	t.Run("user found", func(t *testing.T) {
-		user, err := queries.GetUserByGithubID(nil, 12345)
+		user, err := queries.GetUserByGithubID(context.TODO(), 12345)
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
 		}
@@ -321,7 +322,7 @@ func TestMockQueries_GetUserByGithubID(t *testing.T) {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		_, err := queries.GetUserByGithubID(nil, 99999)
+		_, err := queries.GetUserByGithubID(context.TODO(), 99999)
 		if err == nil {
 			t.Error("expected error for non-existent user")
 		}
@@ -336,7 +337,7 @@ func TestMockQueries_GetUserByID(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 
 	t.Run("user found", func(t *testing.T) {
-		user, err := queries.GetUserByID(nil, userID)
+		user, err := queries.GetUserByID(context.TODO(), userID)
 		if err != nil {
 			t.Fatalf("expected no error, got %v", err)
 		}
@@ -346,7 +347,7 @@ func TestMockQueries_GetUserByID(t *testing.T) {
 	})
 
 	t.Run("user not found", func(t *testing.T) {
-		_, err := queries.GetUserByID(nil, uuid.New())
+		_, err := queries.GetUserByID(context.TODO(), uuid.New())
 		if err == nil {
 			t.Error("expected error for non-existent user")
 		}
@@ -364,7 +365,7 @@ func TestMockQueries_ListAppsByUser(t *testing.T) {
 
 	queries := NewMockQueries(mockDB)
 
-	apps, err := queries.ListAppsByUser(nil, userID)
+	apps, err := queries.ListAppsByUser(context.TODO(), userID)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
@@ -381,7 +382,7 @@ func TestMockQueries_GetAppByName(t *testing.T) {
 	queries := NewMockQueries(mockDB)
 
 	t.Run("app found", func(t *testing.T) {
-		app, err := queries.GetAppByName(nil, db.GetAppByNameParams{
+		app, err := queries.GetAppByName(context.TODO(), db.GetAppByNameParams{
 			UserID: userID,
 			Name:   "myapp",
 		})
@@ -394,7 +395,7 @@ func TestMockQueries_GetAppByName(t *testing.T) {
 	})
 
 	t.Run("app not found", func(t *testing.T) {
-		_, err := queries.GetAppByName(nil, db.GetAppByNameParams{
+		_, err := queries.GetAppByName(context.TODO(), db.GetAppByNameParams{
 			UserID: userID,
 			Name:   "nonexistent",
 		})

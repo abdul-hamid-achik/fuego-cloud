@@ -449,7 +449,7 @@ func TestCreateDeployment(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateDeployment failed: %v", err)
 	}
-	defer testQueries.DeleteDeployment(ctx, deployment.ID)
+	defer func() { _ = testQueries.DeleteDeployment(ctx, deployment.ID) }()
 
 	if deployment.ID == uuid.Nil {
 		t.Error("expected non-nil deployment ID")
@@ -483,7 +483,7 @@ func TestUpdateDeploymentStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateDeployment failed: %v", err)
 	}
-	defer testQueries.DeleteDeployment(ctx, deployment.ID)
+	defer func() { _ = testQueries.DeleteDeployment(ctx, deployment.ID) }()
 
 	message := "Deployment successful"
 	updated, err := testQueries.UpdateDeploymentStatus(ctx, db.UpdateDeploymentStatusParams{
@@ -517,12 +517,12 @@ func TestGetLatestDeployment(t *testing.T) {
 	d1, _ := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 		AppID: app.ID, Version: 1, Image: "nginx:1", Status: "running",
 	})
-	defer testQueries.DeleteDeployment(ctx, d1.ID)
+	defer func() { _ = testQueries.DeleteDeployment(ctx, d1.ID) }()
 
 	d2, _ := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 		AppID: app.ID, Version: 2, Image: "nginx:2", Status: "running",
 	})
-	defer testQueries.DeleteDeployment(ctx, d2.ID)
+	defer func() { _ = testQueries.DeleteDeployment(ctx, d2.ID) }()
 
 	latest, err := testQueries.GetLatestDeployment(ctx, app.ID)
 	if err != nil {
@@ -558,7 +558,7 @@ func TestCreateDomain(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateDomain failed: %v", err)
 	}
-	defer testQueries.DeleteDomain(ctx, domain.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 	if domain.Domain != domainName {
 		t.Errorf("expected domain %q, got %q", domainName, domain.Domain)
@@ -584,7 +584,7 @@ func TestUpdateDomainVerified(t *testing.T) {
 		AppID:  app.ID,
 		Domain: "verify-" + uuid.New().String()[:8] + ".example.com",
 	})
-	defer testQueries.DeleteDomain(ctx, domain.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 	updated, err := testQueries.UpdateDomainVerified(ctx, domain.ID)
 	if err != nil {
@@ -615,12 +615,12 @@ func TestListDomainsByApp(t *testing.T) {
 	d1, _ := testQueries.CreateDomain(ctx, db.CreateDomainParams{
 		AppID: app.ID, Domain: "d1-" + uuid.New().String()[:8] + ".example.com",
 	})
-	defer testQueries.DeleteDomain(ctx, d1.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, d1.ID) }()
 
 	d2, _ := testQueries.CreateDomain(ctx, db.CreateDomainParams{
 		AppID: app.ID, Domain: "d2-" + uuid.New().String()[:8] + ".example.com",
 	})
-	defer testQueries.DeleteDomain(ctx, d2.ID)
+	defer func() { _ = testQueries.DeleteDomain(ctx, d2.ID) }()
 
 	domains, err := testQueries.ListDomainsByApp(ctx, app.ID)
 	if err != nil {
@@ -654,7 +654,7 @@ func TestCreateAPIToken(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateAPIToken failed: %v", err)
 	}
-	defer testQueries.DeleteAPIToken(ctx, token.ID)
+	defer func() { _ = testQueries.DeleteAPIToken(ctx, token.ID) }()
 
 	if token.Name != "test-token" {
 		t.Errorf("expected name 'test-token', got %q", token.Name)
@@ -677,7 +677,7 @@ func TestGetAPITokenByHash(t *testing.T) {
 		TokenHash: tokenHash,
 		ExpiresAt: pgtype.Timestamptz{Valid: false},
 	})
-	defer testQueries.DeleteAPIToken(ctx, token.ID)
+	defer func() { _ = testQueries.DeleteAPIToken(ctx, token.ID) }()
 
 	got, err := testQueries.GetAPITokenByHash(ctx, tokenHash)
 	if err != nil {
@@ -704,7 +704,7 @@ func TestUpdateAPITokenLastUsed(t *testing.T) {
 		TokenHash: "hash-" + uuid.New().String(),
 		ExpiresAt: pgtype.Timestamptz{Valid: false},
 	})
-	defer testQueries.DeleteAPIToken(ctx, token.ID)
+	defer func() { _ = testQueries.DeleteAPIToken(ctx, token.ID) }()
 
 	// Should not error
 	err := testQueries.UpdateAPITokenLastUsed(ctx, token.ID)
@@ -766,7 +766,7 @@ func TestListActivityLogsByApp(t *testing.T) {
 
 	// Create activity logs
 	for i := 0; i < 3; i++ {
-		testQueries.CreateActivityLog(ctx, db.CreateActivityLogParams{
+		_, _ = testQueries.CreateActivityLog(ctx, db.CreateActivityLogParams{
 			UserID:    pgtype.UUID{Bytes: user.ID, Valid: true},
 			AppID:     pgtype.UUID{Bytes: app.ID, Valid: true},
 			Action:    "test.action",

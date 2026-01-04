@@ -115,7 +115,7 @@ func TestAppStatus_Struct(t *testing.T) {
 
 func TestDeploy_WithFakeClient(t *testing.T) {
 	// Create fake clientset
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 
 	client := NewClientWithInterface(fakeClient, "test-")
 
@@ -168,7 +168,7 @@ func TestDeploy_WithFakeClient(t *testing.T) {
 }
 
 func TestEnsureNamespace_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	cfg := &AppConfig{
@@ -201,7 +201,7 @@ func TestEnsureNamespace_WithFakeClient(t *testing.T) {
 }
 
 func TestApplySecret_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	// Create namespace first
@@ -245,7 +245,7 @@ func TestApplySecret_WithFakeClient(t *testing.T) {
 }
 
 func TestApplyDeployment_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	// Create namespace first
@@ -283,7 +283,7 @@ func TestApplyDeployment_WithFakeClient(t *testing.T) {
 }
 
 func TestApplyService_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	// Create namespace first
@@ -316,7 +316,7 @@ func TestApplyService_WithFakeClient(t *testing.T) {
 }
 
 func TestApplyIngress_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	// Create namespace first
@@ -350,7 +350,7 @@ func TestApplyIngress_WithFakeClient(t *testing.T) {
 }
 
 func TestDeleteApp_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	// Create namespace
@@ -376,7 +376,7 @@ func TestDeleteApp_WithFakeClient(t *testing.T) {
 }
 
 func TestRestartApp_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	ctx := context.Background()
@@ -419,7 +419,7 @@ func TestRestartApp_WithFakeClient(t *testing.T) {
 }
 
 func TestScaleApp_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	ctx := context.Background()
@@ -455,7 +455,7 @@ func TestScaleApp_WithFakeClient(t *testing.T) {
 
 func TestGetAppStatus_WithFakeClient(t *testing.T) {
 	t.Run("not deployed", func(t *testing.T) {
-		fakeClient := fake.NewSimpleClientset()
+		fakeClient := fake.NewClientset()
 		client := NewClientWithInterface(fakeClient, "test-")
 
 		status, err := client.GetAppStatus(context.Background(), "nonexistent")
@@ -468,7 +468,7 @@ func TestGetAppStatus_WithFakeClient(t *testing.T) {
 	})
 
 	t.Run("running", func(t *testing.T) {
-		fakeClient := fake.NewSimpleClientset()
+		fakeClient := fake.NewClientset()
 		client := NewClientWithInterface(fakeClient, "test-")
 
 		ctx := context.Background()
@@ -500,7 +500,7 @@ func TestGetAppStatus_WithFakeClient(t *testing.T) {
 	})
 
 	t.Run("partially ready", func(t *testing.T) {
-		fakeClient := fake.NewSimpleClientset()
+		fakeClient := fake.NewClientset()
 		client := NewClientWithInterface(fakeClient, "test-")
 
 		ctx := context.Background()
@@ -529,7 +529,7 @@ func TestGetAppStatus_WithFakeClient(t *testing.T) {
 	})
 
 	t.Run("starting", func(t *testing.T) {
-		fakeClient := fake.NewSimpleClientset()
+		fakeClient := fake.NewClientset()
 		client := NewClientWithInterface(fakeClient, "test-")
 
 		ctx := context.Background()
@@ -559,7 +559,7 @@ func TestGetAppStatus_WithFakeClient(t *testing.T) {
 }
 
 func TestGetPods_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	ctx := context.Background()
@@ -588,7 +588,7 @@ func TestGetPods_WithFakeClient(t *testing.T) {
 }
 
 func TestGetIngress_WithFakeClient(t *testing.T) {
-	fakeClient := fake.NewSimpleClientset()
+	fakeClient := fake.NewClientset()
 	client := NewClientWithInterface(fakeClient, "test-")
 
 	ctx := context.Background()

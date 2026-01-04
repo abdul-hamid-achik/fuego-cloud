@@ -89,10 +89,10 @@ func deleteTestUser(t *testing.T, userID uuid.UUID) {
 		Offset: 0,
 	})
 	for _, app := range apps {
-		testQueries.DeleteApp(ctx, app.ID)
+		_ = testQueries.DeleteApp(ctx, app.ID)
 	}
 
-	testQueries.DeleteUser(ctx, userID)
+	_ = testQueries.DeleteUser(ctx, userID)
 }
 
 // TestAppsEndpointValidation tests input validation for apps endpoints
@@ -319,7 +319,7 @@ func TestDatabaseAppOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateApp failed: %v", err)
 		}
-		defer testQueries.DeleteApp(ctx, app.ID)
+		defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 		// Verify creation
 		if app.Name != appName {
@@ -371,7 +371,7 @@ func TestDatabaseAppOperations(t *testing.T) {
 		}
 		defer func() {
 			for _, id := range appIDs {
-				testQueries.DeleteApp(ctx, id)
+				_ = testQueries.DeleteApp(ctx, id)
 			}
 		}()
 
@@ -402,7 +402,7 @@ func TestDatabaseAppOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateApp failed: %v", err)
 		}
-		defer testQueries.DeleteApp(ctx, app.ID)
+		defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 		// Update status
 		updated, err := testQueries.UpdateAppStatus(ctx, db.UpdateAppStatusParams{
@@ -482,7 +482,7 @@ func TestAppCountByUser(t *testing.T) {
 	}
 	defer func() {
 		for _, id := range appIDs {
-			testQueries.DeleteApp(ctx, id)
+			_ = testQueries.DeleteApp(ctx, id)
 		}
 	}()
 

@@ -22,17 +22,17 @@ func mockGitHubServer(t *testing.T, userResponse *GitHubUser, emailsResponse []m
 		case "/user":
 			if statusCode != 0 {
 				w.WriteHeader(statusCode)
-				json.NewEncoder(w).Encode(map[string]string{"message": "error"})
+				_ = json.NewEncoder(w).Encode(map[string]string{"message": "error"})
 				return
 			}
 			if userResponse != nil {
-				json.NewEncoder(w).Encode(userResponse)
+				_ = json.NewEncoder(w).Encode(userResponse)
 			}
 		case "/user/emails":
 			if emailsResponse != nil {
-				json.NewEncoder(w).Encode(emailsResponse)
+				_ = json.NewEncoder(w).Encode(emailsResponse)
 			} else {
-				json.NewEncoder(w).Encode([]map[string]interface{}{})
+				_ = json.NewEncoder(w).Encode([]map[string]interface{}{})
 			}
 		default:
 			w.WriteHeader(http.StatusNotFound)
@@ -290,7 +290,7 @@ func TestGetPrimaryEmail_PrimaryVerified(t *testing.T) {
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(emails)
+		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
 
@@ -317,7 +317,7 @@ func TestGetPrimaryEmail_FallbackToVerified(t *testing.T) {
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(emails)
+		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
 
@@ -344,7 +344,7 @@ func TestGetPrimaryEmail_FallbackToFirst(t *testing.T) {
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode(emails)
+		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
 
@@ -365,7 +365,7 @@ func TestGetPrimaryEmail_FallbackToFirst(t *testing.T) {
 
 func TestGetPrimaryEmail_NoEmails(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		json.NewEncoder(w).Encode([]map[string]interface{}{})
+		_ = json.NewEncoder(w).Encode([]map[string]interface{}{})
 	}))
 	defer server.Close()
 

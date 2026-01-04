@@ -85,7 +85,7 @@ func TestDomainOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateDomain failed: %v", err)
 		}
-		defer testQueries.DeleteDomain(ctx, domain.ID)
+		defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 		if domain.Domain != domainName {
 			t.Errorf("expected domain %q, got %q", domainName, domain.Domain)
@@ -108,7 +108,7 @@ func TestDomainOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateDomain failed: %v", err)
 		}
-		defer testQueries.DeleteDomain(ctx, created.ID)
+		defer func() { _ = testQueries.DeleteDomain(ctx, created.ID) }()
 
 		retrieved, err := testQueries.GetDomainByName(ctx, domainName)
 		if err != nil {
@@ -136,7 +136,7 @@ func TestDomainOperations(t *testing.T) {
 		}
 		defer func() {
 			for _, id := range domainIDs {
-				testQueries.DeleteDomain(ctx, id)
+				_ = testQueries.DeleteDomain(ctx, id)
 			}
 		}()
 
@@ -160,7 +160,7 @@ func TestDomainOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateDomain failed: %v", err)
 		}
-		defer testQueries.DeleteDomain(ctx, domain.ID)
+		defer func() { _ = testQueries.DeleteDomain(ctx, domain.ID) }()
 
 		// Verify the domain - UpdateDomainVerified takes only ID parameter
 		updated, err := testQueries.UpdateDomainVerified(ctx, domain.ID)

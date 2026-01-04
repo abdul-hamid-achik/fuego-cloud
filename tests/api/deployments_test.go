@@ -29,7 +29,7 @@ func TestDeploymentOperations(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	t.Run("create deployment", func(t *testing.T) {
 		deployment, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
@@ -200,7 +200,7 @@ func TestDeploymentVersioning(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	t.Run("sequential versioning", func(t *testing.T) {
 		var prevVersion int32 = 0
@@ -242,7 +242,7 @@ func TestDeploymentRollback(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	// Create v1
 	v1, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
@@ -304,7 +304,7 @@ func TestDeploymentTimestamps(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateApp failed: %v", err)
 	}
-	defer testQueries.DeleteApp(ctx, app.ID)
+	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	before := time.Now().Add(-time.Second)
 

@@ -37,7 +37,7 @@ func TestUserOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser failed: %v", err)
 		}
-		defer testQueries.DeleteUser(ctx, user.ID)
+		defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 		if user.Username != username {
 			t.Errorf("expected username %q, got %q", username, user.Username)
@@ -70,7 +70,7 @@ func TestUserOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser failed: %v", err)
 		}
-		defer testQueries.DeleteUser(ctx, user.ID)
+		defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 		retrieved, err := testQueries.GetUserByGitHubID(ctx, githubID)
 		if err != nil {
@@ -95,7 +95,7 @@ func TestUserOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser failed: %v", err)
 		}
-		defer testQueries.DeleteUser(ctx, user.ID)
+		defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 		retrieved, err := testQueries.GetUserByUsername(ctx, username)
 		if err != nil {
@@ -120,7 +120,7 @@ func TestUserOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser failed: %v", err)
 		}
-		defer testQueries.DeleteUser(ctx, user.ID)
+		defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 		newEmail := "updated-" + username + "@test.com"
 		updated, err := testQueries.UpdateUser(ctx, db.UpdateUserParams{
@@ -150,7 +150,7 @@ func TestUserOperations(t *testing.T) {
 		if err != nil {
 			t.Fatalf("CreateUser failed: %v", err)
 		}
-		defer testQueries.DeleteUser(ctx, user.ID)
+		defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 		// Upgrade to pro
 		updated, err := testQueries.UpdateUserPlan(ctx, db.UpdateUserPlanParams{
@@ -268,7 +268,7 @@ func TestUserTimestamps(t *testing.T) {
 	if err != nil {
 		t.Fatalf("CreateUser failed: %v", err)
 	}
-	defer testQueries.DeleteUser(ctx, user.ID)
+	defer func() { _ = testQueries.DeleteUser(ctx, user.ID) }()
 
 	after := time.Now().Add(time.Second)
 
