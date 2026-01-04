@@ -30,7 +30,7 @@ func Get(c *fuego.Context) error {
 		Name:   appName,
 	})
 	if err != nil {
-		return c.Redirect("/apps", 302)
+		return c.Redirect("/dashboard/apps", 302)
 	}
 
 	// Get deployments

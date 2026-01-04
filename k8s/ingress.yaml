@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fuego-cloud
+  labels:
+    app.kubernetes.io/name: fuego-cloud
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - cloud.fuego.build
+      secretName: fuego-cloud-tls
+  rules:
+    - host: cloud.fuego.build
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fuego-cloud
+                port:
+                  number: 80

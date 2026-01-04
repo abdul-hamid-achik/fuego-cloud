@@ -7,6 +7,7 @@ import (
 	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
+	"github.com/abdul-hamid-achik/fuego-cloud/internal/k8s"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -101,33 +102,54 @@ func Get(c *fuego.Context) error {
 		}
 	}
 
+	// Get real metrics from K8s if available
+	var cpuCurrent, cpuAvg, memCurrent, memAvg float64
+	var podCount, readyPods int
+
+	if k8sClient, ok := c.Get("k8s").(*k8s.Client); ok && k8sClient != nil {
+		if appMetrics, err := k8sClient.GetAppMetrics(context.Background(), app.Name); err == nil {
+			cpuCurrent = appMetrics.TotalCPU * 100 // Convert to percentage (assuming 1 core = 100%)
+			cpuAvg = appMetrics.AvgCPU * 100
+			memCurrent = appMetrics.TotalMemoryMB
+			memAvg = appMetrics.AvgMemoryMB
+			podCount = appMetrics.PodCount
+			readyPods = appMetrics.ReadyPods
+		}
+	}
+
+	// Calculate uptime based on ready pods
+	var uptimePercent float64 = 100.0
+	if podCount > 0 {
+		uptimePercent = (float64(readyPods) / float64(podCount)) * 100
+	}
+
 	response := MetricsResponse{
 		AppName: app.Name,
 		Period:  period,
 		CPU: ResourceMetrics{
-			Current: 12.5,
-			Average: 8.3,
-			Peak:    45.2,
+			Current: cpuCurrent,
+			Average: cpuAvg,
+			Peak:    cpuCurrent * 1.5, // Estimate peak as 1.5x current
 			Unit:    "percent",
 		},
 		Memory: ResourceMetrics{
-			Current: 128.0,
-			Average: 96.0,
-			Peak:    256.0,
+			Current: memCurrent,
+			Average: memAvg,
+			Peak:    memCurrent * 1.2, // Estimate peak as 1.2x current
 			Unit:    "MB",
 		},
 		Network: NetworkMetrics{
-			IngressBytes:  1024 * 1024 * 50,
-			EgressBytes:   1024 * 1024 * 120,
-			RequestsTotal: 15420,
+			IngressBytes:  0, // Requires CNI metrics or service mesh
+			EgressBytes:   0,
+			RequestsTotal: 0,
 		},
 		Requests: RequestMetrics{
-			Total:      15420,
-			PerSecond:  2.3,
-			ByStatus:   map[string]int64{"2xx": 14850, "3xx": 320, "4xx": 180, "5xx": 70},
-			AvgLatency: 45.2,
-			P95Latency: 120.5,
-			P99Latency: 250.3,
+			Total:      0, // Requires Prometheus/service mesh integration
+			PerSecond:  0,
+			ByStatus:   map[string]int64{},
+			AvgLatency: 0,
+			P95Latency: 0,
+			P99Latency: 0,
 		},
 		Deployments: DeploymentStats{
 			Total:      len(deployments),
@@ -136,7 +158,7 @@ func Get(c *fuego.Context) error {
 			LastDeploy: lastDeploy,
 		},
 		Uptime: UptimeMetrics{
-			Percentage:    99.95,
+			Percentage:    uptimePercent,
 			CurrentStatus: app.Status,
 		},
 	}

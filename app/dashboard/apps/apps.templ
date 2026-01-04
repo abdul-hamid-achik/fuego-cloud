@@ -22,12 +22,12 @@ type AppItem struct {
 }
 
 templ Page(data AppsPageData) {
-	@Layout("Apps", "/apps", data.UserName) {
+	@Layout("Apps", "/dashboard/apps", data.UserName) {
 		<div class="px-4 py-6 sm:px-0">
 			<div class="flex items-center justify-between mb-6">
 				<h1 class="text-2xl font-semibold text-gray-900">Your Apps</h1>
 				<button
-					hx-get="/apps/new"
+					hx-get="/dashboard/apps/new"
 					hx-target="#modal-container"
 					hx-swap="innerHTML"
 					class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -57,7 +57,7 @@ templ EmptyState() {
 		<p class="mt-1 text-sm text-gray-500">Get started by creating a new app.</p>
 		<div class="mt-6">
 			<button
-				hx-get="/apps/new"
+				hx-get="/dashboard/apps/new"
 				hx-target="#modal-container"
 				hx-swap="innerHTML"
 				class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
@@ -76,7 +76,7 @@ templ AppsList(apps []AppItem) {
 		<ul role="list" class="divide-y divide-gray-200">
 			for _, app := range apps {
 				<li>
-					<a href={ templ.URL("/apps/" + app.Name) } class="block hover:bg-gray-50">
+					<a href={ templ.URL("/dashboard/apps/" + app.Name) } class="block hover:bg-gray-50">
 						<div class="px-4 py-4 sm:px-6">
 							<div class="flex items-center justify-between">
 								<div class="flex items-center min-w-0">

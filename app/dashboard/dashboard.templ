@@ -33,7 +33,7 @@ templ Page(data DashboardData) {
 				<div class="px-4 py-5 sm:px-6 border-b border-gray-200">
 					<div class="flex items-center justify-between">
 						<h3 class="text-lg leading-6 font-medium text-gray-900">Recent Apps</h3>
-						<a href="/apps" class="text-sm text-indigo-600 hover:text-indigo-500">
+						<a href="/dashboard/apps" class="text-sm text-indigo-600 hover:text-indigo-500">
 							View all
 						</a>
 					</div>
@@ -42,7 +42,7 @@ templ Page(data DashboardData) {
 					if len(data.RecentApps) == 0 {
 						<li class="px-4 py-12 text-center text-gray-500">
 							No apps yet.
-							<a href="/apps" class="text-indigo-600 hover:text-indigo-500 ml-1">
+							<a href="/dashboard/apps" class="text-indigo-600 hover:text-indigo-500 ml-1">
 								Create your first app
 							</a>
 						</li>
@@ -59,7 +59,7 @@ templ Page(data DashboardData) {
 										</div>
 									</div>
 									<div class="ml-4 truncate">
-										<a href={ templ.URL("/apps/" + app.Name) } class="text-sm font-medium text-gray-900 hover:text-indigo-600">
+										<a href={ templ.URL("/dashboard/apps/" + app.Name) } class="text-sm font-medium text-gray-900 hover:text-indigo-600">
 											{ app.Name }
 										</a>
 										<p class="text-sm text-gray-500">
