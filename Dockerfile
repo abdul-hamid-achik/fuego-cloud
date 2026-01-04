@@ -3,8 +3,9 @@ WORKDIR /app
 
 RUN apk add --no-cache git curl nodejs npm
 
-# Install fuego CLI
-RUN go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest
+# Install fuego CLI and templ
+RUN go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest && \
+    go install github.com/a-h/templ/cmd/templ@latest
 
 # Copy go.mod and go.sum first for better caching
 COPY go.mod go.sum ./
@@ -13,11 +14,14 @@ RUN go mod download
 # Copy the rest of the source code
 COPY . .
 
-# Build Tailwind CSS if styles exist
-RUN if [ -f "styles/input.css" ]; then fuego tailwind build; fi
+# Build Tailwind CSS (Tailwind v4)
+RUN if [ -f "styles/input.css" ]; then \
+    npm install tailwindcss @tailwindcss/cli && \
+    npx @tailwindcss/cli -i styles/input.css -o static/css/styles.css --minify; \
+    fi
 
-# Build with fuego CLI (handles bracket notation directories)
-RUN fuego build
+# Generate templ files (fuego build has tailwind issues in Docker)
+RUN templ generate
 
 # Build the binary
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fuego-cloud .

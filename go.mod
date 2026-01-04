@@ -76,4 +76,5 @@ require (
 	sigs.k8s.io/yaml v1.6.0 // indirect
 )
 
-replace github.com/abdul-hamid-achik/fuego => /Users/abdulachik/projects/fuego
+// Local development replace - comment out for Docker builds
+// replace github.com/abdul-hamid-achik/fuego => /Users/abdulachik/projects/fuego

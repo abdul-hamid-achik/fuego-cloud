@@ -9,7 +9,9 @@ import (
 	"syscall"
 
 	"github.com/abdul-hamid-achik/fuego-cloud/app/api"
+	"github.com/abdul-hamid-achik/fuego-cloud/internal/cloudflare"
 	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
+	"github.com/abdul-hamid-achik/fuego-cloud/internal/k8s"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -34,6 +36,24 @@ func main() {
 		slog.Info("connected to database")
 	}
 
+	// Initialize Kubernetes client
+	var k8sClient *k8s.Client
+	if cfg.Kubeconfig != "" || os.Getenv("KUBERNETES_SERVICE_HOST") != "" {
+		k8sClient, err = k8s.NewClient(cfg.Kubeconfig, cfg.K8sNamespacePrefix)
+		if err != nil {
+			slog.Warn("kubernetes not available", "error", err)
+		} else {
+			slog.Info("connected to kubernetes")
+		}
+	}
+
+	// Initialize Cloudflare client
+	var cfClient *cloudflare.Client
+	if cfg.CloudflareAPIToken != "" && cfg.CloudflareZoneID != "" {
+		cfClient = cloudflare.NewClient(cfg.CloudflareAPIToken, cfg.CloudflareZoneID)
+		slog.Info("cloudflare client initialized")
+	}
+
 	app := fuego.New()
 
 	// Add security middleware stack
@@ -53,6 +73,8 @@ func main() {
 		return func(c *fuego.Context) error {
 			c.Set("db", pool)
 			c.Set("config", cfg)
+			c.Set("k8s", k8sClient)
+			c.Set("cloudflare", cfClient)
 			return next(c)
 		}
 	})
