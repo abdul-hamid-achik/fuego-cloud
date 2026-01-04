@@ -16,7 +16,7 @@ COPY . .
 # Build Tailwind CSS (Tailwind v4)
 RUN if [ -f "styles/input.css" ]; then \
     npm install tailwindcss @tailwindcss/cli && \
-    npx @tailwindcss/cli -i styles/input.css -o static/css/styles.css --minify; \
+    npx @tailwindcss/cli -i styles/input.css -o static/css/output.css --minify; \
     fi
 
 # Generate templ files
