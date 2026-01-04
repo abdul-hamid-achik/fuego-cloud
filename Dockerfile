@@ -3,10 +3,8 @@ WORKDIR /app
 
 RUN apk add --no-cache git curl nodejs npm
 
-# Install fuego CLI, templ, and sqlc
-RUN go install github.com/abdul-hamid-achik/fuego/cmd/fuego@latest && \
-    go install github.com/a-h/templ/cmd/templ@latest && \
-    go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
+# Install templ for template generation
+RUN go install github.com/a-h/templ/cmd/templ@latest
 
 # Copy go.mod and go.sum first for better caching
 COPY go.mod go.sum ./
@@ -21,12 +19,11 @@ RUN if [ -f "styles/input.css" ]; then \
     npx @tailwindcss/cli -i styles/input.css -o static/css/styles.css --minify; \
     fi
 
-# Generate code (sqlc + templ)
-RUN sqlc generate && templ generate
+# Generate templ files
+RUN templ generate
 
-# Build the binary using fuego (handles route generation)
-RUN fuego build --os linux --arch amd64 -o bin/fuego-cloud || \
-    CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o bin/fuego-cloud .
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o bin/fuego-cloud .
 
 # Production image
 FROM alpine:3.20
