@@ -7,90 +7,84 @@ package main
 import (
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 
-	login_page "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/login"
+	health "github.com/abdul-hamid-achik/fuego-cloud/app/api/health"
+	dashboard "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard"
+	activity "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/activity"
+	deployments "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/deployments"
+	verify "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain/verify"
+	scale "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/scale"
+	callback2 "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/callback"
+	logout "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/logout"
+	name2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps/appname"
+	login_page "github.com/abdul-hamid-achik/fuego-cloud/app/auth_routes/login"
+	domain "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains/bydomain"
+	domains "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/domains"
+	env "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/env"
+	name "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname"
+	metrics2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/metrics"
+	apps2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps"
 	app_page "github.com/abdul-hamid-achik/fuego-cloud/app"
-	callback "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/callback"
-	logout "github.com/abdul-hamid-achik/fuego-cloud/app/_auth_/logout"
-	id "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/deployments/_id"
-	verify "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/domains/_domain/verify"
-	domains "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/domains"
-	env "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/env"
-	logs "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/logs"
-	callback2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/callback"
-	deployments "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/deployments"
-	restart "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/restart"
+	id "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/deployments/byid"
+	metrics "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/metrics"
+	restart "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/restart"
+	callback "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/callback"
 	auth "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth"
 	token "github.com/abdul-hamid-achik/fuego-cloud/app/api/auth/token"
-	health "github.com/abdul-hamid-achik/fuego-cloud/app/api/health"
 	token2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/registry/token"
 	me "github.com/abdul-hamid-achik/fuego-cloud/app/api/users/me"
-	apps2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps"
-	activity "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/activity"
-	domain "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/domains/_domain"
-	metrics "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/metrics"
-	name "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name"
-	scale "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/_name/scale"
-	metrics2 "github.com/abdul-hamid-achik/fuego-cloud/app/api/metrics"
+	logs "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps/appname/logs"
 	apps "github.com/abdul-hamid-achik/fuego-cloud/app/api/apps"
-	name2 "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard/apps/_name"
-	dashboard "github.com/abdul-hamid-achik/fuego-cloud/app/dashboard"
 )
 
 // RegisterRoutes registers all file-based routes with the app.
 func RegisterRoutes(app *fuego.App) {
 
-	// GET /callback (from app/_auth_/callback/route.go)
-	app.RegisterRoute("GET", "/callback", callback.Get)
-	// POST /logout (from app/_auth_/logout/route.go)
-	app.RegisterRoute("POST", "/logout", logout.Post)
-	// GET /logout (from app/_auth_/logout/route.go)
-	app.RegisterRoute("GET", "/logout", logout.Get)
-	// GET /api/apps/{name}/activity (from app/api/apps/_name/activity/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/activity", activity.Get)
-	// GET /api/apps/{name}/deployments/{id} (from app/api/apps/_name/deployments/_id/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/deployments/{id}", id.Get)
-	// POST /api/apps/{name}/deployments/{id} (from app/api/apps/_name/deployments/_id/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/deployments/{id}", id.Post)
-	// GET /api/apps/{name}/deployments (from app/api/apps/_name/deployments/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/deployments", deployments.Get)
-	// POST /api/apps/{name}/deployments (from app/api/apps/_name/deployments/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/deployments", deployments.Post)
-	// GET /api/apps/{name}/domains/{domain} (from app/api/apps/_name/domains/_domain/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/domains/{domain}", domain.Get)
-	// DELETE /api/apps/{name}/domains/{domain} (from app/api/apps/_name/domains/_domain/route.go)
-	app.RegisterRoute("DELETE", "/api/apps/{name}/domains/{domain}", domain.Delete)
-	// POST /api/apps/{name}/domains/{domain}/verify (from app/api/apps/_name/domains/_domain/verify/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/domains/{domain}/verify", verify.Post)
-	// GET /api/apps/{name}/domains (from app/api/apps/_name/domains/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/domains", domains.Get)
-	// POST /api/apps/{name}/domains (from app/api/apps/_name/domains/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/domains", domains.Post)
-	// GET /api/apps/{name}/env (from app/api/apps/_name/env/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/env", env.Get)
-	// PUT /api/apps/{name}/env (from app/api/apps/_name/env/route.go)
-	app.RegisterRoute("PUT", "/api/apps/{name}/env", env.Put)
-	// GET /api/apps/{name}/logs (from app/api/apps/_name/logs/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/logs", logs.Get)
-	// GET /api/apps/{name}/metrics (from app/api/apps/_name/metrics/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/metrics", metrics.Get)
-	// POST /api/apps/{name}/restart (from app/api/apps/_name/restart/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/restart", restart.Post)
-	// GET /api/apps/{name} (from app/api/apps/_name/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}", name.Get)
-	// PUT /api/apps/{name} (from app/api/apps/_name/route.go)
-	app.RegisterRoute("PUT", "/api/apps/{name}", name.Put)
-	// DELETE /api/apps/{name} (from app/api/apps/_name/route.go)
-	app.RegisterRoute("DELETE", "/api/apps/{name}", name.Delete)
-	// POST /api/apps/{name}/scale (from app/api/apps/_name/scale/route.go)
-	app.RegisterRoute("POST", "/api/apps/{name}/scale", scale.Post)
-	// GET /api/apps/{name}/scale (from app/api/apps/_name/scale/route.go)
-	app.RegisterRoute("GET", "/api/apps/{name}/scale", scale.Get)
+	// GET /api/apps/appname/activity (from app/api/apps/appname/activity/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/activity", activity.Get)
+	// GET /api/apps/appname/deployments/byid (from app/api/apps/appname/deployments/byid/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/deployments/byid", id.Get)
+	// POST /api/apps/appname/deployments/byid (from app/api/apps/appname/deployments/byid/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/deployments/byid", id.Post)
+	// GET /api/apps/appname/deployments (from app/api/apps/appname/deployments/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/deployments", deployments.Get)
+	// POST /api/apps/appname/deployments (from app/api/apps/appname/deployments/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/deployments", deployments.Post)
+	// GET /api/apps/appname/domains/bydomain (from app/api/apps/appname/domains/bydomain/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/domains/bydomain", domain.Get)
+	// DELETE /api/apps/appname/domains/bydomain (from app/api/apps/appname/domains/bydomain/route.go)
+	app.RegisterRoute("DELETE", "/api/apps/appname/domains/bydomain", domain.Delete)
+	// POST /api/apps/appname/domains/bydomain/verify (from app/api/apps/appname/domains/bydomain/verify/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/domains/bydomain/verify", verify.Post)
+	// GET /api/apps/appname/domains (from app/api/apps/appname/domains/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/domains", domains.Get)
+	// POST /api/apps/appname/domains (from app/api/apps/appname/domains/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/domains", domains.Post)
+	// GET /api/apps/appname/env (from app/api/apps/appname/env/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/env", env.Get)
+	// PUT /api/apps/appname/env (from app/api/apps/appname/env/route.go)
+	app.RegisterRoute("PUT", "/api/apps/appname/env", env.Put)
+	// GET /api/apps/appname/logs (from app/api/apps/appname/logs/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/logs", logs.Get)
+	// GET /api/apps/appname/metrics (from app/api/apps/appname/metrics/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/metrics", metrics.Get)
+	// POST /api/apps/appname/restart (from app/api/apps/appname/restart/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/restart", restart.Post)
+	// GET /api/apps/appname (from app/api/apps/appname/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname", name.Get)
+	// PUT /api/apps/appname (from app/api/apps/appname/route.go)
+	app.RegisterRoute("PUT", "/api/apps/appname", name.Put)
+	// DELETE /api/apps/appname (from app/api/apps/appname/route.go)
+	app.RegisterRoute("DELETE", "/api/apps/appname", name.Delete)
+	// POST /api/apps/appname/scale (from app/api/apps/appname/scale/route.go)
+	app.RegisterRoute("POST", "/api/apps/appname/scale", scale.Post)
+	// GET /api/apps/appname/scale (from app/api/apps/appname/scale/route.go)
+	app.RegisterRoute("GET", "/api/apps/appname/scale", scale.Get)
 	// GET /api/apps (from app/api/apps/route.go)
 	app.RegisterRoute("GET", "/api/apps", apps.Get)
 	// POST /api/apps (from app/api/apps/route.go)
 	app.RegisterRoute("POST", "/api/apps", apps.Post)
 	// GET /api/auth/callback (from app/api/auth/callback/route.go)
-	app.RegisterRoute("GET", "/api/auth/callback", callback2.Get)
+	app.RegisterRoute("GET", "/api/auth/callback", callback.Get)
 	// GET /api/auth (from app/api/auth/route.go)
 	app.RegisterRoute("GET", "/api/auth", auth.Get)
 	// POST /api/auth/token (from app/api/auth/token/route.go)
@@ -111,14 +105,20 @@ func RegisterRoutes(app *fuego.App) {
 	app.RegisterRoute("GET", "/api/users/me", me.Get)
 	// PUT /api/users/me (from app/api/users/me/route.go)
 	app.RegisterRoute("PUT", "/api/users/me", me.Put)
-	// GET /dashboard/apps/{name} (from app/dashboard/apps/_name/route.go)
-	app.RegisterRoute("GET", "/dashboard/apps/{name}", name2.Get)
+	// GET /auth_routes/callback (from app/auth_routes/callback/route.go)
+	app.RegisterRoute("GET", "/auth_routes/callback", callback2.Get)
+	// POST /auth_routes/logout (from app/auth_routes/logout/route.go)
+	app.RegisterRoute("POST", "/auth_routes/logout", logout.Post)
+	// GET /auth_routes/logout (from app/auth_routes/logout/route.go)
+	app.RegisterRoute("GET", "/auth_routes/logout", logout.Get)
+	// GET /dashboard/apps/appname (from app/dashboard/apps/appname/route.go)
+	app.RegisterRoute("GET", "/dashboard/apps/appname", name2.Get)
 	// GET /dashboard/apps (from app/dashboard/apps/route.go)
 	app.RegisterRoute("GET", "/dashboard/apps", apps2.Get)
 	// GET /dashboard (from app/dashboard/route.go)
 	app.RegisterRoute("GET", "/dashboard", dashboard.Get)
-	// Page: /login (from app/_auth_/login/page.templ)
-	app.Get("/login", func(c *fuego.Context) error {
+	// Page: /auth_routes/login (from app/auth_routes/login/page.templ)
+	app.Get("/auth_routes/login", func(c *fuego.Context) error {
 		return fuego.TemplComponent(c, 200, login_page.Page())
 	})
 	// Page: / (from app/page.templ)
