@@ -24,8 +24,9 @@ RUN if [ -f "styles/input.css" ]; then \
 # Generate code (sqlc + templ)
 RUN sqlc generate && templ generate
 
-# Build the binary
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fuego-cloud .
+# Build the binary using fuego (handles route generation)
+RUN fuego build --os linux --arch amd64 -o bin/fuego-cloud || \
+    CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o bin/fuego-cloud .
 
 # Production image
 FROM alpine:3.20
@@ -33,7 +34,7 @@ RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /app
 
 # Copy binary and static assets
-COPY --from=builder /app/fuego-cloud .
+COPY --from=builder /app/bin/fuego-cloud .
 COPY --from=builder /app/static ./static
 
 # Create non-root user
