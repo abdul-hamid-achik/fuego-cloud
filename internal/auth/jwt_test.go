@@ -63,8 +63,8 @@ func TestValidateToken_Valid(t *testing.T) {
 		t.Errorf("expected username %q, got %q", username, claims.Username)
 	}
 
-	if claims.Issuer != "fuego-cloud" {
-		t.Errorf("expected issuer 'fuego-cloud', got %q", claims.Issuer)
+	if claims.Issuer != "nexo-cloud" {
+		t.Errorf("expected issuer 'nexo-cloud', got %q", claims.Issuer)
 	}
 }
 
@@ -93,7 +93,7 @@ func TestValidateToken_ExpiredToken(t *testing.T) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(-1 * time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now().Add(-2 * time.Hour)),
-			Issuer:    "fuego-cloud",
+			Issuer:    "nexo-cloud",
 			Subject:   userID.String(),
 		},
 	}
@@ -275,7 +275,7 @@ func TestHashToken_UniqueOutputs(t *testing.T) {
 }
 
 func TestHashToken_Deterministic(t *testing.T) {
-	token := "fgt_deterministic_test_token_12345"
+	token := "fgt_deterministic_test_token_12345" //nolint:gosec // Test token for deterministic hashing, not a real credential
 
 	// Hash the same token multiple times
 	hashes := make([]string, 100)

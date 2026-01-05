@@ -1,11 +1,11 @@
 output "network_id" {
   description = "ID of the private network"
-  value       = hcloud_network.fuego.id
+  value       = hcloud_network.nexo.id
 }
 
 output "load_balancer_ip" {
   description = "Public IP of the load balancer"
-  value       = hcloud_load_balancer.fuego.ipv4
+  value       = hcloud_load_balancer.nexo.ipv4
 }
 
 output "master_node_ip" {

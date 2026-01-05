@@ -3,10 +3,10 @@ package scale
 import (
 	"context"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/k8s"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/auth"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/config"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/k8s"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"

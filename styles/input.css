@@ -15,7 +15,7 @@
 	}
 }
 
-/* Fuego Fire Theme - Orange/Red gradient utilities */
+/* Nexo Theme - Orange/Red gradient utilities */
 @layer utilities {
 	.from-orange-500 {
 		--tw-gradient-from: var(--color-orange-500);

@@ -1,4 +1,4 @@
-# Fuego Cloud
+# Nexo Cloud
 
 The cloud platform built specifically for [Fuego](https://github.com/abdul-hamid-achik/fuego) applications. Deploy, scale, and manage your Go apps with zero configuration.
 
@@ -16,8 +16,8 @@ The cloud platform built specifically for [Fuego](https://github.com/abdul-hamid
 
 ```bash
 # Clone the repo
-git clone https://github.com/abdul-hamid-achik/fuego-cloud.git
-cd fuego-cloud
+git clone https://github.com/abdul-hamid-achik/nexo-cloud.git
+cd nexo-cloud
 
 # Copy environment variables
 cp .env.example .env
@@ -95,7 +95,7 @@ See [.env.example](.env.example) for all available options.
 ## Architecture
 
 ```
-fuego-cloud/
+nexo-cloud/
 ├── app/                    # HTTP handlers (Fuego routes)
 │   ├── api/               # REST API endpoints
 │   ├── dashboard/         # Web dashboard (templ)
@@ -140,8 +140,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for production deployment instructi
 ### Quick Deploy with Docker
 
 ```bash
-docker build -t fuego-cloud .
-docker run -p 3000:3000 --env-file .env fuego-cloud
+docker build -t nexo-cloud .
+docker run -p 3000:3000 --env-file .env nexo-cloud
 ```
 
 ### Deploy to Kubernetes
@@ -165,5 +165,5 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## Links
 
 - [Fuego Framework](https://github.com/abdul-hamid-achik/fuego)
-- [Documentation](https://fuego.build/docs)
-- [Discord](https://discord.gg/fuego)
+- [Documentation](https://nexo.build/docs)
+- [Discord](https://discord.gg/nexo)

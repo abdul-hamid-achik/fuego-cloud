@@ -1,6 +1,6 @@
-# Fuego Cloud Deployment Guide
+# Nexo Cloud Deployment Guide
 
-This guide covers everything needed to deploy fuego-cloud to production.
+This guide covers everything needed to deploy nexo-cloud to production.
 
 ## Prerequisites
 
@@ -77,9 +77,9 @@ migrate -path db/migrations -database "$DATABASE_URL" up
 1. Go to **GitHub Settings > Developer settings > OAuth Apps**
 2. Click **New OAuth App**
 3. Fill in:
-   - **Application name**: `Fuego Cloud`
-   - **Homepage URL**: `https://cloud.fuego.build` (your domain)
-   - **Authorization callback URL**: `https://cloud.fuego.build/api/auth/callback`
+   - **Application name**: `Nexo Cloud`
+   - **Homepage URL**: `https://cloud.nexo.build` (your domain)
+   - **Authorization callback URL**: `https://cloud.nexo.build/api/auth/callback`
 4. Save and copy Client ID and Client Secret
 
 ## 4. Kubernetes Cluster Setup
@@ -130,11 +130,11 @@ Create secrets in the cluster:
 
 ```bash
 # Create namespace
-kubectl create namespace fuego-cloud
+kubectl create namespace nexo-cloud
 
 # Create secrets
-kubectl create secret generic fuego-cloud-secrets \
-  --namespace fuego-cloud \
+kubectl create secret generic nexo-cloud-secrets \
+  --namespace nexo-cloud \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --from-literal=JWT_SECRET="$JWT_SECRET" \
   --from-literal=ENCRYPTION_KEY="$ENCRYPTION_KEY" \
@@ -149,8 +149,8 @@ Or use Sealed Secrets for GitOps:
 brew install kubeseal
 
 # Create sealed secret
-kubectl create secret generic fuego-cloud-secrets \
-  --namespace fuego-cloud \
+kubectl create secret generic nexo-cloud-secrets \
+  --namespace nexo-cloud \
   --from-literal=DATABASE_URL="$DATABASE_URL" \
   --dry-run=client -o yaml | \
   kubeseal --format yaml > sealed-secret.yaml
@@ -165,8 +165,8 @@ kubectl apply -f sealed-secret.yaml
 
 ```bash
 # Build and push image
-docker build -t ghcr.io/abdul-hamid-achik/fuego-cloud:latest .
-docker push ghcr.io/abdul-hamid-achik/fuego-cloud:latest
+docker build -t ghcr.io/abdul-hamid-achik/nexo-cloud:latest .
+docker push ghcr.io/abdul-hamid-achik/nexo-cloud:latest
 
 # Apply Kubernetes manifests
 kubectl apply -f k8s/deployment.yaml
@@ -193,16 +193,16 @@ This will:
 
 ### Cloudflare (Recommended)
 
-1. Add A record: `cloud.fuego.build` → Cluster IP
-2. Add wildcard A record: `*.fuego.build` → Cluster IP
+1. Add A record: `cloud.nexo.build` → Cluster IP
+2. Add wildcard A record: `*.nexo.build` → Cluster IP
 3. Enable proxy for DDoS protection
 
 ### Manual DNS
 
 Add these records:
 ```
-cloud.fuego.build.     A     <CLUSTER_IP>
-*.fuego.build.         A     <CLUSTER_IP>
+cloud.nexo.build.     A     <CLUSTER_IP>
+*.nexo.build.         A     <CLUSTER_IP>
 ```
 
 ## 8. CI/CD Pipeline Configuration
@@ -232,8 +232,8 @@ Update `.github/workflows/ci.yml` to run tests with database:
 | `GITHUB_CALLBACK_URL` | No | OAuth callback URL |
 | `KUBECONFIG` | No | Path to kubeconfig file |
 | `K8S_NAMESPACE_PREFIX` | No | Namespace prefix for tenant apps |
-| `PLATFORM_DOMAIN` | No | Platform domain (default: cloud.fuego.build) |
-| `APPS_DOMAIN_SUFFIX` | No | Apps domain suffix (default: fuego.build) |
+| `PLATFORM_DOMAIN` | No | Platform domain (default: cloud.nexo.build) |
+| `APPS_DOMAIN_SUFFIX` | No | Apps domain suffix (default: nexo.build) |
 
 ## 10. Monitoring & Logging
 
@@ -243,9 +243,9 @@ The app exposes metrics at `/api/metrics`. Configure Prometheus to scrape:
 
 ```yaml
 scrape_configs:
-  - job_name: 'fuego-cloud'
+  - job_name: 'nexo-cloud'
     static_configs:
-      - targets: ['fuego-cloud.fuego-cloud.svc:3000']
+      - targets: ['nexo-cloud.nexo-cloud.svc:3000']
 ```
 
 ### Logging
@@ -274,8 +274,8 @@ psql "$DATABASE_URL" < backup-20240101.sql
 Use Velero for cluster backups:
 
 ```bash
-velero backup create fuego-cloud-backup \
-  --include-namespaces fuego-cloud
+velero backup create nexo-cloud-backup \
+  --include-namespaces nexo-cloud
 ```
 
 ## Quick Start Checklist
@@ -292,7 +292,7 @@ velero backup create fuego-cloud-backup \
 - [ ] Set up Kubernetes cluster
 - [ ] Configure DNS records
 - [ ] Deploy application
-- [ ] Verify health check: `curl https://cloud.fuego.build/api/health`
+- [ ] Verify health check: `curl https://cloud.nexo.build/api/health`
 
 ## Troubleshooting
 
@@ -310,10 +310,10 @@ psql "$DATABASE_URL" -c "SELECT * FROM schema_migrations"
 
 ```bash
 # Check logs
-kubectl logs -n fuego-cloud deployment/fuego-cloud
+kubectl logs -n nexo-cloud deployment/nexo-cloud
 
 # Check events
-kubectl describe pod -n fuego-cloud -l app=fuego-cloud
+kubectl describe pod -n nexo-cloud -l app=nexo-cloud
 ```
 
 ### OAuth Callback Errors

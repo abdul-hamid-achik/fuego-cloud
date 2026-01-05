@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )

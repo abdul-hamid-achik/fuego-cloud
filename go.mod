@@ -1,4 +1,4 @@
-module github.com/abdul-hamid-achik/fuego-cloud
+module github.com/abdul-hamid-achik/nexo-cloud
 
 go 1.25.5
 

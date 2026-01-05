@@ -1,3 +1,3 @@
 ---
 ansible_python_interpreter: /usr/bin/python3
-traefik_acme_email: "admin@fuego.build"
+traefik_acme_email: "admin@nexo.build"

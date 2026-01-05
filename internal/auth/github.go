@@ -1,3 +1,4 @@
+// Package auth provides authentication and authorization utilities.
 package auth
 
 import (
@@ -10,6 +11,7 @@ import (
 	"golang.org/x/oauth2/github"
 )
 
+// GitHubUser represents a GitHub user profile.
 type GitHubUser struct {
 	ID        int64  `json:"id"`
 	Login     string `json:"login"`
@@ -18,10 +20,12 @@ type GitHubUser struct {
 	Name      string `json:"name"`
 }
 
+// GitHubClient handles GitHub OAuth2 authentication.
 type GitHubClient struct {
 	config *oauth2.Config
 }
 
+// NewGitHubClient creates a new GitHub OAuth2 client.
 func NewGitHubClient(clientID, clientSecret, callbackURL string) *GitHubClient {
 	return &GitHubClient{
 		config: &oauth2.Config{
@@ -34,14 +38,17 @@ func NewGitHubClient(clientID, clientSecret, callbackURL string) *GitHubClient {
 	}
 }
 
+// GetAuthURL returns the GitHub OAuth2 authorization URL.
 func (c *GitHubClient) GetAuthURL(state string) string {
 	return c.config.AuthCodeURL(state, oauth2.AccessTypeOffline)
 }
 
+// Exchange exchanges an authorization code for an access token.
 func (c *GitHubClient) Exchange(ctx context.Context, code string) (*oauth2.Token, error) {
 	return c.config.Exchange(ctx, code)
 }
 
+// GetUser fetches the authenticated user's GitHub profile.
 func (c *GitHubClient) GetUser(ctx context.Context, token *oauth2.Token) (*GitHubUser, error) {
 	client := c.config.Client(ctx, token)
 
@@ -70,7 +77,7 @@ func (c *GitHubClient) GetUser(ctx context.Context, token *oauth2.Token) (*GitHu
 	return &user, nil
 }
 
-func (c *GitHubClient) getPrimaryEmail(ctx context.Context, client *http.Client) (string, error) {
+func (c *GitHubClient) getPrimaryEmail(_ context.Context, client *http.Client) (string, error) {
 	resp, err := client.Get("https://api.github.com/user/emails")
 	if err != nil {
 		return "", err

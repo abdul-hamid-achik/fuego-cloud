@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/app/api"
+	"github.com/abdul-hamid-achik/nexo-cloud/app/api"
 )
 
 // TestRateLimiter tests the RateLimiter type directly
@@ -51,7 +51,7 @@ func TestRateLimiter(t *testing.T) {
 		}
 	})
 
-	t.Run("is thread-safe", func(t *testing.T) {
+	t.Run("is thread-safe", func(_ *testing.T) {
 		limiter := api.NewRateLimiter(1000, 2000)
 
 		var wg sync.WaitGroup
@@ -152,7 +152,7 @@ func TestRateLimiterMultipleIPs(t *testing.T) {
 }
 
 // TestMiddlewareHelpers tests helper functions from middleware
-func TestGetClientIP_XForwardedFor(t *testing.T) {
+func TestGetClientIP_XForwardedFor(_ *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/api/test", nil)
 	req.Header.Set("X-Forwarded-For", "203.0.113.50, 70.41.3.18, 150.172.238.178")
 

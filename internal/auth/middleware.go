@@ -9,27 +9,32 @@ import (
 
 type contextKey string
 
+// Context keys for storing authentication data.
 const (
 	UserIDKey   contextKey = "user_id"
 	UsernameKey contextKey = "username"
 	ClaimsKey   contextKey = "claims"
 )
 
+// GetUserIDFromContext retrieves the user ID from the context.
 func GetUserIDFromContext(ctx context.Context) (uuid.UUID, bool) {
 	userID, ok := ctx.Value(UserIDKey).(uuid.UUID)
 	return userID, ok
 }
 
+// GetUsernameFromContext retrieves the username from the context.
 func GetUsernameFromContext(ctx context.Context) (string, bool) {
 	username, ok := ctx.Value(UsernameKey).(string)
 	return username, ok
 }
 
+// GetClaimsFromContext retrieves the JWT claims from the context.
 func GetClaimsFromContext(ctx context.Context) (*Claims, bool) {
 	claims, ok := ctx.Value(ClaimsKey).(*Claims)
 	return claims, ok
 }
 
+// SetUserInContext stores user authentication data in the context.
 func SetUserInContext(ctx context.Context, claims *Claims) context.Context {
 	ctx = context.WithValue(ctx, UserIDKey, claims.UserID)
 	ctx = context.WithValue(ctx, UsernameKey, claims.Username)
@@ -37,6 +42,7 @@ func SetUserInContext(ctx context.Context, claims *Claims) context.Context {
 	return ctx
 }
 
+// ExtractBearerToken extracts the bearer token from an authorization header.
 func ExtractBearerToken(authHeader string) string {
 	if authHeader == "" {
 		return ""
@@ -48,6 +54,7 @@ func ExtractBearerToken(authHeader string) string {
 	return parts[1]
 }
 
+// IsPublicPath checks if a path is publicly accessible without authentication.
 func IsPublicPath(path string) bool {
 	publicPaths := []string{
 		"/api/health",

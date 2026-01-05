@@ -66,7 +66,7 @@ spec:
             - --entrypoints.web.http.redirections.entryPoint.to=websecure
             - --entrypoints.web.http.redirections.entryPoint.scheme=https
             - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
-            - --certificatesresolvers.letsencrypt.acme.email={{ traefik_acme_email | default('admin@fuego.build') }}
+            - --certificatesresolvers.letsencrypt.acme.email={{ traefik_acme_email | default('admin@nexo.build') }}
             - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
             - --log.level=INFO
           ports:

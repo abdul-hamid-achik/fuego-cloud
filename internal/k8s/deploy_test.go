@@ -74,7 +74,7 @@ func TestDeployResult_Struct(t *testing.T) {
 		Success:   true,
 		Message:   "deployment successful",
 		Namespace: "test-namespace",
-		URL:       "https://myapp.fuego.build",
+		URL:       "https://myapp.nexo.build",
 	}
 
 	if !result.Success {
@@ -86,8 +86,8 @@ func TestDeployResult_Struct(t *testing.T) {
 	if result.Namespace != "test-namespace" {
 		t.Errorf("expected Namespace 'test-namespace', got %q", result.Namespace)
 	}
-	if result.URL != "https://myapp.fuego.build" {
-		t.Errorf("expected URL 'https://myapp.fuego.build', got %q", result.URL)
+	if result.URL != "https://myapp.nexo.build" {
+		t.Errorf("expected URL 'https://myapp.nexo.build', got %q", result.URL)
 	}
 }
 
@@ -638,14 +638,14 @@ func TestDeploy_URLGeneration(t *testing.T) {
 		{
 			name:         "with domain suffix",
 			appName:      "myapp",
-			domainSuffix: "fuego.build",
+			domainSuffix: "nexo.build",
 			customDomain: "",
-			expectedURL:  "https://myapp.fuego.build",
+			expectedURL:  "https://myapp.nexo.build",
 		},
 		{
 			name:         "with custom domain",
 			appName:      "myapp",
-			domainSuffix: "fuego.build",
+			domainSuffix: "nexo.build",
 			customDomain: "custom.example.com",
 			expectedURL:  "https://custom.example.com",
 		},

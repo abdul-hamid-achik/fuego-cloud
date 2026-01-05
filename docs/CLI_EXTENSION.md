@@ -1,23 +1,23 @@
-# Fuego CLI Extension for Fuego Cloud
+# Fuego CLI Extension for Nexo Cloud
 
-This document outlines the planned CLI extension for the Fuego framework to support deployment to Fuego Cloud.
+This document outlines the planned CLI extension for the Fuego framework to support deployment to Nexo Cloud.
 
 ## Overview
 
-The Fuego CLI will be extended with deployment commands that integrate seamlessly with Fuego Cloud. This will enable developers to deploy their Fuego applications with a single command.
+The Fuego CLI will be extended with deployment commands that integrate seamlessly with Nexo Cloud. This will enable developers to deploy their Fuego applications with a single command.
 
 ## Proposed Commands
 
 ### `fuego login`
 
-Authenticate with Fuego Cloud.
+Authenticate with Nexo Cloud.
 
 ```bash
 fuego login
 ```
 
 **Flow:**
-1. Opens browser to `https://cloud.fuego.build/api/auth/cli`
+1. Opens browser to `https://cloud.nexo.build/api/auth/cli`
 2. User authorizes the CLI
 3. CLI receives a short-lived code
 4. CLI exchanges code for an API token
@@ -28,7 +28,7 @@ fuego login
 
 ### `fuego deploy`
 
-Deploy the current project to Fuego Cloud.
+Deploy the current project to Nexo Cloud.
 
 ```bash
 fuego deploy
@@ -38,7 +38,7 @@ fuego deploy
 1. Read `fuego.yaml` for app configuration
 2. Build the application (`fuego build`)
 3. Build and push Docker image to GHCR
-4. Trigger deployment via Fuego Cloud API
+4. Trigger deployment via Nexo Cloud API
 5. Stream deployment logs
 6. Display deployment URL on success
 
@@ -178,7 +178,7 @@ cloud:
 
 ```
 ┌─────────┐          ┌──────────────┐          ┌─────────────┐
-│   CLI   │          │  Fuego Cloud │          │   GitHub    │
+│   CLI   │          │  Nexo Cloud │          │   GitHub    │
 └────┬────┘          └──────┬───────┘          └──────┬──────┘
      │                      │                         │
      │  Open browser        │                         │

@@ -144,7 +144,7 @@ func TestGetClaimsFromContext_WrongType(t *testing.T) {
 }
 
 func TestGetClaimsFromContext_NilClaims(t *testing.T) {
-	var claims *Claims = nil
+	var claims *Claims
 	ctx := context.WithValue(context.Background(), ClaimsKey, claims)
 
 	got, ok := GetClaimsFromContext(ctx)

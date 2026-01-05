@@ -25,7 +25,7 @@ func GenerateNamespace(cfg *AppConfig) *corev1.Namespace {
 			Name: cfg.Namespace,
 			Labels: map[string]string{
 				"app.kubernetes.io/name":       cfg.Name,
-				"app.kubernetes.io/managed-by": "fuego-cloud",
+				"app.kubernetes.io/managed-by": "nexo-cloud",
 			},
 		},
 	}
@@ -43,7 +43,7 @@ func GenerateSecret(cfg *AppConfig) *corev1.Secret {
 			Namespace: cfg.Namespace,
 			Labels: map[string]string{
 				"app.kubernetes.io/name":       cfg.Name,
-				"app.kubernetes.io/managed-by": "fuego-cloud",
+				"app.kubernetes.io/managed-by": "nexo-cloud",
 			},
 		},
 		Type:       corev1.SecretTypeOpaque,
@@ -54,7 +54,7 @@ func GenerateSecret(cfg *AppConfig) *corev1.Secret {
 func GenerateDeployment(cfg *AppConfig) *appsv1.Deployment {
 	labels := map[string]string{
 		"app.kubernetes.io/name":       cfg.Name,
-		"app.kubernetes.io/managed-by": "fuego-cloud",
+		"app.kubernetes.io/managed-by": "nexo-cloud",
 	}
 
 	return &appsv1.Deployment{
@@ -124,7 +124,7 @@ func GenerateDeployment(cfg *AppConfig) *appsv1.Deployment {
 func GenerateService(cfg *AppConfig) *corev1.Service {
 	labels := map[string]string{
 		"app.kubernetes.io/name":       cfg.Name,
-		"app.kubernetes.io/managed-by": "fuego-cloud",
+		"app.kubernetes.io/managed-by": "nexo-cloud",
 	}
 
 	return &corev1.Service{
@@ -151,7 +151,7 @@ func GenerateService(cfg *AppConfig) *corev1.Service {
 func GenerateIngress(cfg *AppConfig) *networkingv1.Ingress {
 	labels := map[string]string{
 		"app.kubernetes.io/name":       cfg.Name,
-		"app.kubernetes.io/managed-by": "fuego-cloud",
+		"app.kubernetes.io/managed-by": "nexo-cloud",
 	}
 
 	pathType := networkingv1.PathTypePrefix

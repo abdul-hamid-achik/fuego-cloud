@@ -1,3 +1,4 @@
+// Package cloudflare provides DNS management via Cloudflare API.
 package cloudflare
 
 import (
@@ -194,7 +195,7 @@ func (c *Client) GetRecordByName(ctx context.Context, name string) (*DNSRecord, 
 	return &apiResp.Result[0], nil
 }
 
-// VerifyDomain checks if a domain is properly configured
+// DomainVerification represents domain verification status.
 type DomainVerification struct {
 	Domain    string `json:"domain"`
 	Verified  bool   `json:"verified"`

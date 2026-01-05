@@ -7,7 +7,7 @@ monitoring_namespace: "monitoring"
 
 # Grafana settings
 grafana_admin_password: "{{ lookup('password', '/dev/null length=16 chars=ascii_letters,digits') }}"
-grafana_ingress_host: "grafana.{{ platform_domain | default('fuego.build') }}"
+grafana_ingress_host: "grafana.{{ platform_domain | default('nexo.build') }}"
 
 # Prometheus settings
 prometheus_retention: "15d"

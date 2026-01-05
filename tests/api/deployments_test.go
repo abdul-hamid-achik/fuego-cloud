@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
 	"github.com/google/uuid"
 )
 
@@ -101,7 +101,7 @@ func TestDeploymentOperations(t *testing.T) {
 		for i := 10; i < 15; i++ {
 			_, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 				AppID:   app.ID,
-				Version: int32(i),
+				Version: int32(i), //nolint:gosec // Loop counter guaranteed to be within int32 range
 				Image:   "myapp:v" + string(rune('0'+i)),
 				Status:  "pending",
 			})
@@ -203,11 +203,11 @@ func TestDeploymentVersioning(t *testing.T) {
 	defer func() { _ = testQueries.DeleteApp(ctx, app.ID) }()
 
 	t.Run("sequential versioning", func(t *testing.T) {
-		var prevVersion int32 = 0
+		var prevVersion int32
 		for i := 1; i <= 5; i++ {
 			deployment, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 				AppID:   app.ID,
-				Version: int32(i),
+				Version: int32(i), //nolint:gosec // Loop counter guaranteed to be within int32 range
 				Image:   "myapp:v" + string(rune('0'+i)),
 				Status:  "pending",
 			})

@@ -1,6 +1,6 @@
 # GitHub OAuth Setup
 
-This guide walks you through setting up GitHub OAuth for Fuego Cloud authentication.
+This guide walks you through setting up GitHub OAuth for Nexo Cloud authentication.
 
 ## Prerequisites
 
@@ -19,10 +19,10 @@ This guide walks you through setting up GitHub OAuth for Fuego Cloud authenticat
 
    | Field | Development Value | Production Value |
    |-------|-------------------|------------------|
-   | Application name | Fuego Cloud (Dev) | Fuego Cloud |
-   | Homepage URL | http://localhost:3000 | https://cloud.fuego.build |
+   | Application name | Nexo Cloud (Dev) | Nexo Cloud |
+   | Homepage URL | http://localhost:3000 | https://cloud.nexo.build |
    | Application description | Deployment platform for Fuego apps | Deployment platform for Fuego apps |
-   | Authorization callback URL | http://localhost:3000/api/auth/callback | https://cloud.fuego.build/api/auth/callback |
+   | Authorization callback URL | http://localhost:3000/api/auth/callback | https://cloud.nexo.build/api/auth/callback |
 
 4. Click **"Register application"**
 
@@ -86,7 +86,7 @@ GITHUB_CALLBACK_URL=http://localhost:3000/api/auth/callback
 
 ## OAuth Scopes
 
-Fuego Cloud requests the following scopes:
+Nexo Cloud requests the following scopes:
 
 | Scope | Purpose |
 |-------|---------|

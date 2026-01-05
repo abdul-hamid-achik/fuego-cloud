@@ -8,10 +8,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/app/api"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/cloudflare"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/k8s"
+	"github.com/abdul-hamid-achik/nexo-cloud/app/api"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/cloudflare"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/config"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/k8s"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -65,7 +65,7 @@ func main() {
 	app.Use(api.CORSMiddleware([]string{     // CORS
 		"http://localhost:3000",
 		"http://localhost:5173",
-		"https://cloud.fuego.build",
+		"https://cloud.nexo.build",
 	}))
 
 	// Inject dependencies

@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
 	"github.com/google/uuid"
 )
 

@@ -1,4 +1,5 @@
-package crypto
+// Package cryptoutil provides encryption utilities.
+package cryptoutil
 
 import (
 	"crypto/aes"
@@ -9,6 +10,7 @@ import (
 	"io"
 )
 
+// Encrypt encrypts data using AES-GCM.
 func Encrypt(data map[string]string, key string) ([]byte, error) {
 	plaintext, err := json.Marshal(data)
 	if err != nil {
@@ -39,6 +41,7 @@ func Encrypt(data map[string]string, key string) ([]byte, error) {
 	return ciphertext, nil
 }
 
+// Decrypt decrypts data using AES-GCM.
 func Decrypt(ciphertext []byte, key string) (map[string]string, error) {
 	if len(ciphertext) == 0 {
 		return make(map[string]string), nil

@@ -1,3 +1,4 @@
+// Package testutil provides testing utilities and mocks.
 package testutil
 
 import (
@@ -9,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/auth"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/config"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/google/uuid"
 )
@@ -28,8 +29,8 @@ func NewTestApp() *TestApp {
 		Environment:      "test",
 		JWTSecret:        "test-jwt-secret-key-for-testing-purposes-only",
 		EncryptionKey:    "test-encryption-key-32-bytes!!!",
-		AppsDomainSuffix: "test.fuego.build",
-		PlatformDomain:   "cloud.test.fuego.build",
+		AppsDomainSuffix: "test.nexo.build",
+		PlatformDomain:   "cloud.test.nexo.build",
 	}
 
 	app := fuego.New()
@@ -214,7 +215,7 @@ func NewMockQueries(mockDB *MockDB) *MockQueries {
 	return &MockQueries{db: mockDB}
 }
 
-func (q *MockQueries) GetUserByGithubID(ctx context.Context, githubID int64) (db.User, error) {
+func (q *MockQueries) GetUserByGithubID(_ context.Context, githubID int64) (db.User, error) {
 	for _, u := range q.db.Users {
 		if u.GithubID == githubID {
 			return u, nil
@@ -223,14 +224,14 @@ func (q *MockQueries) GetUserByGithubID(ctx context.Context, githubID int64) (db
 	return db.User{}, context.DeadlineExceeded
 }
 
-func (q *MockQueries) GetUserByID(ctx context.Context, id uuid.UUID) (db.User, error) {
+func (q *MockQueries) GetUserByID(_ context.Context, id uuid.UUID) (db.User, error) {
 	if user, ok := q.db.Users[id]; ok {
 		return user, nil
 	}
 	return db.User{}, context.DeadlineExceeded
 }
 
-func (q *MockQueries) ListAppsByUser(ctx context.Context, userID uuid.UUID) ([]db.App, error) {
+func (q *MockQueries) ListAppsByUser(_ context.Context, userID uuid.UUID) ([]db.App, error) {
 	var apps []db.App
 	for _, app := range q.db.Apps {
 		if app.UserID == userID {
@@ -240,7 +241,7 @@ func (q *MockQueries) ListAppsByUser(ctx context.Context, userID uuid.UUID) ([]d
 	return apps, nil
 }
 
-func (q *MockQueries) GetAppByName(ctx context.Context, params db.GetAppByNameParams) (db.App, error) {
+func (q *MockQueries) GetAppByName(_ context.Context, params db.GetAppByNameParams) (db.App, error) {
 	for _, app := range q.db.Apps {
 		if app.UserID == params.UserID && app.Name == params.Name {
 			return app, nil
@@ -249,7 +250,7 @@ func (q *MockQueries) GetAppByName(ctx context.Context, params db.GetAppByNamePa
 	return db.App{}, context.DeadlineExceeded
 }
 
-func (q *MockQueries) CreateApp(ctx context.Context, params db.CreateAppParams) (db.App, error) {
+func (q *MockQueries) CreateApp(_ context.Context, params db.CreateAppParams) (db.App, error) {
 	app := db.App{
 		ID:              uuid.New(),
 		UserID:          params.UserID,
@@ -265,7 +266,7 @@ func (q *MockQueries) CreateApp(ctx context.Context, params db.CreateAppParams) 
 	return app, nil
 }
 
-func (q *MockQueries) UpdateApp(ctx context.Context, params db.UpdateAppParams) (db.App, error) {
+func (q *MockQueries) UpdateApp(_ context.Context, params db.UpdateAppParams) (db.App, error) {
 	if app, ok := q.db.Apps[params.ID]; ok {
 		app.Name = params.Name
 		app.Region = params.Region
@@ -277,7 +278,7 @@ func (q *MockQueries) UpdateApp(ctx context.Context, params db.UpdateAppParams) 
 	return db.App{}, context.DeadlineExceeded
 }
 
-func (q *MockQueries) DeleteApp(ctx context.Context, id uuid.UUID) error {
+func (q *MockQueries) DeleteApp(_ context.Context, id uuid.UUID) error {
 	if _, ok := q.db.Apps[id]; ok {
 		delete(q.db.Apps, id)
 		return nil
@@ -285,7 +286,7 @@ func (q *MockQueries) DeleteApp(ctx context.Context, id uuid.UUID) error {
 	return context.DeadlineExceeded
 }
 
-func (q *MockQueries) ListDeploymentsByApp(ctx context.Context, params db.ListDeploymentsByAppParams) ([]db.Deployment, error) {
+func (q *MockQueries) ListDeploymentsByApp(_ context.Context, params db.ListDeploymentsByAppParams) ([]db.Deployment, error) {
 	var deps []db.Deployment
 	for _, d := range q.db.Deployments {
 		if d.AppID == params.AppID {
@@ -295,7 +296,7 @@ func (q *MockQueries) ListDeploymentsByApp(ctx context.Context, params db.ListDe
 	return deps, nil
 }
 
-func (q *MockQueries) ListDomainsByApp(ctx context.Context, appID uuid.UUID) ([]db.Domain, error) {
+func (q *MockQueries) ListDomainsByApp(_ context.Context, appID uuid.UUID) ([]db.Domain, error) {
 	var domains []db.Domain
 	for _, d := range q.db.Domains {
 		if d.AppID == appID {

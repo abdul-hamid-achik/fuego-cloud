@@ -1,3 +1,4 @@
+// Package config handles application configuration.
 package config
 
 import (
@@ -5,6 +6,7 @@ import (
 	"strconv"
 )
 
+// Config holds application configuration.
 type Config struct {
 	Port        int
 	Host        string
@@ -38,6 +40,7 @@ type Config struct {
 	AppsDomainSuffix string
 }
 
+// Load loads configuration from environment variables.
 func Load() *Config {
 	return &Config{
 		Port:        getEnvInt("PORT", 3000),
@@ -68,15 +71,17 @@ func Load() *Config {
 		StripeSecretKey:     getEnv("STRIPE_SECRET_KEY", ""),
 		StripeWebhookSecret: getEnv("STRIPE_WEBHOOK_SECRET", ""),
 
-		PlatformDomain:   getEnv("PLATFORM_DOMAIN", "cloud.fuego.build"),
-		AppsDomainSuffix: getEnv("APPS_DOMAIN_SUFFIX", "fuego.build"),
+		PlatformDomain:   getEnv("PLATFORM_DOMAIN", "cloud.nexo.build"),
+		AppsDomainSuffix: getEnv("APPS_DOMAIN_SUFFIX", "nexo.build"),
 	}
 }
 
+// IsDevelopment checks if the environment is development.
 func (c *Config) IsDevelopment() bool {
 	return c.Environment == "development"
 }
 
+// IsProduction checks if the environment is production.
 func (c *Config) IsProduction() bool {
 	return c.Environment == "production"
 }

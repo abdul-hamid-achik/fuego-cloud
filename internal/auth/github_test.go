@@ -289,7 +289,7 @@ func TestGetPrimaryEmail_PrimaryVerified(t *testing.T) {
 		{"email": "unverified@example.com", "primary": false, "verified": false},
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
@@ -316,7 +316,7 @@ func TestGetPrimaryEmail_FallbackToVerified(t *testing.T) {
 		{"email": "verified@example.com", "primary": false, "verified": true},
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
@@ -343,7 +343,7 @@ func TestGetPrimaryEmail_FallbackToFirst(t *testing.T) {
 		{"email": "second@example.com", "primary": false, "verified": false},
 	}
 
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_ = json.NewEncoder(w).Encode(emails)
 	}))
 	defer server.Close()
@@ -364,7 +364,7 @@ func TestGetPrimaryEmail_FallbackToFirst(t *testing.T) {
 }
 
 func TestGetPrimaryEmail_NoEmails(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_ = json.NewEncoder(w).Encode([]map[string]interface{}{})
 	}))
 	defer server.Close()
@@ -385,7 +385,7 @@ func TestGetPrimaryEmail_NoEmails(t *testing.T) {
 }
 
 func TestGetPrimaryEmail_APIError(t *testing.T) {
-	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
 	}))
 	defer server.Close()

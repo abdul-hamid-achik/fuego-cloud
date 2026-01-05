@@ -51,11 +51,11 @@ func TestLoad_DefaultValues(t *testing.T) {
 	}
 
 	// Platform defaults
-	if cfg.PlatformDomain != "cloud.fuego.build" {
-		t.Errorf("expected default PlatformDomain 'cloud.fuego.build', got %q", cfg.PlatformDomain)
+	if cfg.PlatformDomain != "cloud.nexo.build" {
+		t.Errorf("expected default PlatformDomain 'cloud.nexo.build', got %q", cfg.PlatformDomain)
 	}
-	if cfg.AppsDomainSuffix != "fuego.build" {
-		t.Errorf("expected default AppsDomainSuffix 'fuego.build', got %q", cfg.AppsDomainSuffix)
+	if cfg.AppsDomainSuffix != "nexo.build" {
+		t.Errorf("expected default AppsDomainSuffix 'nexo.build', got %q", cfg.AppsDomainSuffix)
 	}
 
 	// OAuth default callback

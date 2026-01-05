@@ -11,12 +11,14 @@ import (
 	"github.com/google/uuid"
 )
 
+// Claims represents JWT token claims.
 type Claims struct {
 	UserID   uuid.UUID `json:"user_id"`
 	Username string    `json:"username"`
 	jwt.RegisteredClaims
 }
 
+// TokenPair represents an access and refresh token pair.
 type TokenPair struct {
 	AccessToken  string    `json:"access_token"`
 	RefreshToken string    `json:"refresh_token"`
@@ -24,6 +26,7 @@ type TokenPair struct {
 	TokenType    string    `json:"token_type"`
 }
 
+// GenerateTokenPair creates a new access and refresh token pair.
 func GenerateTokenPair(userID uuid.UUID, username, secret string) (*TokenPair, error) {
 	accessExpiry := time.Now().Add(15 * time.Minute)
 	accessClaims := Claims{
@@ -32,7 +35,7 @@ func GenerateTokenPair(userID uuid.UUID, username, secret string) (*TokenPair, e
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(accessExpiry),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "fuego-cloud",
+			Issuer:    "nexo-cloud",
 			Subject:   userID.String(),
 		},
 	}
@@ -50,7 +53,7 @@ func GenerateTokenPair(userID uuid.UUID, username, secret string) (*TokenPair, e
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(refreshExpiry),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			Issuer:    "fuego-cloud",
+			Issuer:    "nexo-cloud",
 			Subject:   userID.String(),
 		},
 	}
@@ -69,6 +72,7 @@ func GenerateTokenPair(userID uuid.UUID, username, secret string) (*TokenPair, e
 	}, nil
 }
 
+// ValidateToken validates a JWT token and returns its claims.
 func ValidateToken(tokenString, secret string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -89,6 +93,7 @@ func ValidateToken(tokenString, secret string) (*Claims, error) {
 	return claims, nil
 }
 
+// GenerateAPIToken generates a random API token.
 func GenerateAPIToken() (string, error) {
 	bytes := make([]byte, 32)
 	if _, err := rand.Read(bytes); err != nil {
@@ -97,6 +102,7 @@ func GenerateAPIToken() (string, error) {
 	return "fgt_" + hex.EncodeToString(bytes), nil
 }
 
+// GenerateState generates a random OAuth2 state parameter.
 func GenerateState() (string, error) {
 	bytes := make([]byte, 16)
 	if _, err := rand.Read(bytes); err != nil {

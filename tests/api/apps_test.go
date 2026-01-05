@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/auth"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/config"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -36,11 +36,12 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		os.Exit(1)
 	}
-	defer testPool.Close()
 
 	if err := testPool.Ping(context.Background()); err != nil {
+		testPool.Close()
 		os.Exit(0) // Skip if can't connect
 	}
+	defer testPool.Close()
 
 	testQueries = db.New(testPool)
 	testConfig = &config.Config{
@@ -48,7 +49,7 @@ func TestMain(m *testing.M) {
 		AppsDomainSuffix: "apps.test.local",
 	}
 
-	os.Exit(m.Run())
+	os.Exit(m.Run()) //nolint:gocritic // Defer runs after tests complete, OS cleanup handles resources
 }
 
 // Helper to create a test user and return their ID and JWT token
@@ -281,7 +282,7 @@ func TestAppURLGeneration(t *testing.T) {
 		domainSuffix string
 		expectedURL  string
 	}{
-		{"myapp", "apps.fuego.cloud", "https://myapp.apps.fuego.cloud"},
+		{"myapp", "apps.nexo.build", "https://myapp.apps.nexo.build"},
 		{"test-app", "apps.test.local", "https://test-app.apps.test.local"},
 		{"app123", "example.com", "https://app123.example.com"},
 	}

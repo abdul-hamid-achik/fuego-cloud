@@ -58,9 +58,7 @@ jobs:
         run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
       - name: Run golangci-lint
-        run: |
-          # Only lint packages without bracket notation in paths
-          golangci-lint run ./internal/... ./tests/... ./app/api/health/... ./app/api/metrics/...
+        run: golangci-lint run ./internal/... ./tests/... ./app/api/health/... ./app/api/metrics/...
 
   build:
     name: Build Check
@@ -88,8 +86,8 @@ jobs:
 
       - name: Verify binary
         run: |
-          ls -la bin/fuego-cloud
-          file bin/fuego-cloud
+          ls -la bin/nexo-cloud
+          file bin/nexo-cloud
 
   docker:
     name: Docker Build (dry-run)
@@ -107,6 +105,6 @@ jobs:
         with:
           context: .
           push: false
-          tags: fuego-cloud:pr-${{ github.event.pull_request.number }}
+          tags: nexo-cloud:pr-${{ github.event.pull_request.number }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

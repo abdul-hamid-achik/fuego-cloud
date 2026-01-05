@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"errors"
 	"testing"
 	"time"
 )
@@ -116,7 +117,7 @@ func TestStreamLogs_Integration(t *testing.T) {
 		case log := <-logCh:
 			logs = append(logs, log)
 		case err := <-errCh:
-			if err != nil && err != context.DeadlineExceeded && err != context.Canceled {
+			if err != nil && !errors.Is(err, context.DeadlineExceeded) && !errors.Is(err, context.Canceled) {
 				t.Logf("StreamLogs ended with error: %v", err)
 			}
 			done = true

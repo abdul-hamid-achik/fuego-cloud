@@ -1,14 +1,16 @@
+// Package health provides health check endpoints.
 package health
 
 import (
 	"context"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/k8s"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/k8s"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// HealthResponse represents the health check response.
 type HealthResponse struct {
 	Status     string `json:"status"`
 	Database   string `json:"database"`
@@ -16,6 +18,7 @@ type HealthResponse struct {
 	Version    string `json:"version"`
 }
 
+// Get handles health check requests.
 func Get(c *fuego.Context) error {
 	response := HealthResponse{
 		Status:  "ok",

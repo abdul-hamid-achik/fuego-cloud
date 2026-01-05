@@ -3,10 +3,10 @@ package env
 import (
 	"context"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/auth"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/config"
-	"github.com/abdul-hamid-achik/fuego-cloud/internal/crypto"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/auth"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/config"
+	"github.com/abdul-hamid-achik/nexo-cloud/internal/cryptoutil"
 	"github.com/abdul-hamid-achik/fuego/pkg/fuego"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -49,7 +49,7 @@ func Get(c *fuego.Context) error {
 		})
 	}
 
-	envVars, err := crypto.Decrypt(app.EnvVarsEncrypted, cfg.EncryptionKey)
+	envVars, err := cryptoutil.Decrypt(app.EnvVarsEncrypted, cfg.EncryptionKey)
 	if err != nil {
 		return c.JSON(500, map[string]string{"error": "failed to decrypt environment variables"})
 	}
@@ -90,7 +90,7 @@ func Put(c *fuego.Context) error {
 		return c.JSON(404, map[string]string{"error": "app not found"})
 	}
 
-	encrypted, err := crypto.Encrypt(req.Variables, cfg.EncryptionKey)
+	encrypted, err := cryptoutil.Encrypt(req.Variables, cfg.EncryptionKey)
 	if err != nil {
 		return c.JSON(500, map[string]string{"error": "failed to encrypt environment variables"})
 	}

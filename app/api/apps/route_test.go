@@ -159,7 +159,7 @@ func TestAppResponseStructure(t *testing.T) {
 		Size:            "starter",
 		Status:          "running",
 		DeploymentCount: 5,
-		URL:             "https://test-app.fuego.build",
+		URL:             "https://test-app.nexo.build",
 	}
 
 	if resp.ID != "test-id" {

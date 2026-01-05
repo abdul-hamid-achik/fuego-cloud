@@ -23,7 +23,7 @@ RUN if [ -f "styles/input.css" ]; then \
 RUN templ generate
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o bin/fuego-cloud .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o bin/nexo-cloud .
 
 # Production image
 FROM alpine:3.20
@@ -31,7 +31,7 @@ RUN apk --no-cache add ca-certificates tzdata
 WORKDIR /app
 
 # Copy binary and static assets
-COPY --from=builder /app/bin/fuego-cloud .
+COPY --from=builder /app/bin/nexo-cloud .
 COPY --from=builder /app/static ./static
 
 # Create non-root user
@@ -39,4 +39,4 @@ RUN adduser -D -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
 EXPOSE 3000
-CMD ["./fuego-cloud"]
+CMD ["./nexo-cloud"]

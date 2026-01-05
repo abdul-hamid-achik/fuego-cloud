@@ -97,9 +97,9 @@ tasks:
   docker:build:
     desc: Build Docker image
     cmds:
-      - docker build -t ghcr.io/abdul-hamid-achik/fuego-cloud:latest .
+      - docker build -t ghcr.io/abdul-hamid-achik/nexo-cloud:latest .
 
   docker:push:
     desc: Push Docker image to GHCR
     cmds:
-      - docker push ghcr.io/abdul-hamid-achik/fuego-cloud:latest
+      - docker push ghcr.io/abdul-hamid-achik/nexo-cloud:latest

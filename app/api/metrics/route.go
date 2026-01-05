@@ -1,3 +1,4 @@
+// Package metrics provides application metrics endpoints.
 package metrics
 
 import (
@@ -24,7 +25,11 @@ func IncrementRequests() {
 
 // AddLatency adds latency to the total (for averaging)
 func AddLatency(d time.Duration) {
-	requestLatency.Add(uint64(d.Microseconds()))
+	microseconds := d.Microseconds()
+	if microseconds < 0 {
+		microseconds = 0
+	}
+	requestLatency.Add(uint64(microseconds)) //nolint:gosec // Overflow protected by check above
 }
 
 // IncrementErrors increments the error counter

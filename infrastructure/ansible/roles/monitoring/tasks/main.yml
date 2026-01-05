@@ -36,9 +36,9 @@
                 resources:
                   requests:
                     storage: "{{ prometheus_storage_size }}"
-          # Scrape fuego-cloud apps
+          # Scrape nexo-cloud apps
           additionalScrapeConfigs:
-            - job_name: 'fuego-cloud-apps'
+            - job_name: 'nexo-cloud-apps'
               kubernetes_sd_configs:
                 - role: pod
                   namespaces:
@@ -71,19 +71,19 @@
             - secretName: grafana-tls
               hosts:
                 - "{{ grafana_ingress_host }}"
-        # Pre-install Fuego Cloud dashboard
+        # Pre-install Nexo Cloud dashboard
         dashboardProviders:
           dashboardproviders.yaml:
             apiVersion: 1
             providers:
-              - name: 'fuego-cloud'
+              - name: 'nexo-cloud'
                 orgId: 1
-                folder: 'Fuego Cloud'
+                folder: 'Nexo Cloud'
                 type: file
                 disableDeletion: false
                 editable: true
                 options:
-                  path: /var/lib/grafana/dashboards/fuego-cloud
+                  path: /var/lib/grafana/dashboards/nexo-cloud
 
       alertmanager:
         enabled: "{{ alertmanager_enabled }}"
@@ -96,21 +96,21 @@
                   requests:
                     storage: 1Gi
 
-- name: Create Fuego Cloud ServiceMonitor
+- name: Create Nexo Cloud ServiceMonitor
   kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: monitoring.coreos.com/v1
       kind: ServiceMonitor
       metadata:
-        name: fuego-cloud-platform
+        name: nexo-cloud-platform
         namespace: "{{ monitoring_namespace }}"
         labels:
           release: prometheus
       spec:
         selector:
           matchLabels:
-            app.kubernetes.io/name: fuego-cloud
+            app.kubernetes.io/name: nexo-cloud
         namespaceSelector:
           matchNames:
             - default

@@ -10,7 +10,7 @@ terraform {
 
   # Using local state for now
   # backend "s3" {
-  #   bucket                      = "fuego-cloud-terraform-state"
+  #   bucket                      = "nexo-cloud-terraform-state"
   #   key                         = "infrastructure/terraform.tfstate"
   #   region                      = "auto"
   #   skip_credentials_validation = true
@@ -28,25 +28,25 @@ provider "hcloud" {
   token = var.hcloud_token
 }
 
-resource "hcloud_ssh_key" "fuego" {
-  name       = "fuego-${var.environment}-key"
+resource "hcloud_ssh_key" "nexo" {
+  name       = "nexo-${var.environment}-key"
   public_key = var.ssh_public_key
 }
 
-resource "hcloud_network" "fuego" {
-  name     = "fuego-${var.environment}-network"
+resource "hcloud_network" "nexo" {
+  name     = "nexo-${var.environment}-network"
   ip_range = "10.0.0.0/16"
 }
 
-resource "hcloud_network_subnet" "fuego" {
-  network_id   = hcloud_network.fuego.id
+resource "hcloud_network_subnet" "nexo" {
+  network_id   = hcloud_network.nexo.id
   type         = "cloud"
   network_zone = "eu-central"
   ip_range     = "10.0.1.0/24"
 }
 
-resource "hcloud_firewall" "fuego" {
-  name = "fuego-${var.environment}-firewall"
+resource "hcloud_firewall" "nexo" {
+  name = "nexo-${var.environment}-firewall"
 
   rule {
     direction  = "in"
@@ -113,20 +113,20 @@ resource "hcloud_firewall" "fuego" {
   }
 }
 
-resource "hcloud_placement_group" "fuego" {
-  name = "fuego-${var.environment}-placement"
+resource "hcloud_placement_group" "nexo" {
+  name = "nexo-${var.environment}-placement"
   type = "spread"
 }
 
 resource "hcloud_server" "nodes" {
   count              = var.node_count
-  name               = "fuego-${var.environment}-node-${count.index + 1}"
+  name               = "nexo-${var.environment}-node-${count.index + 1}"
   server_type        = var.server_type
   image              = "ubuntu-24.04"
   location           = var.location
-  ssh_keys           = [hcloud_ssh_key.fuego.id]
-  placement_group_id = hcloud_placement_group.fuego.id
-  firewall_ids       = [hcloud_firewall.fuego.id]
+  ssh_keys           = [hcloud_ssh_key.nexo.id]
+  placement_group_id = hcloud_placement_group.nexo.id
+  firewall_ids       = [hcloud_firewall.nexo.id]
 
   labels = {
     environment = var.environment
@@ -166,14 +166,14 @@ resource "hcloud_server" "nodes" {
 resource "hcloud_server_network" "nodes" {
   count     = var.node_count
   server_id = hcloud_server.nodes[count.index].id
-  network_id = hcloud_network.fuego.id
+  network_id = hcloud_network.nexo.id
   ip        = "10.0.1.${10 + count.index}"
 
-  depends_on = [hcloud_network_subnet.fuego]
+  depends_on = [hcloud_network_subnet.nexo]
 }
 
-resource "hcloud_load_balancer" "fuego" {
-  name               = "fuego-${var.environment}-lb"
+resource "hcloud_load_balancer" "nexo" {
+  name               = "nexo-${var.environment}-lb"
   load_balancer_type = "lb11"
   location           = var.location
 
@@ -183,26 +183,26 @@ resource "hcloud_load_balancer" "fuego" {
   }
 }
 
-resource "hcloud_load_balancer_network" "fuego" {
-  load_balancer_id = hcloud_load_balancer.fuego.id
-  network_id       = hcloud_network.fuego.id
+resource "hcloud_load_balancer_network" "nexo" {
+  load_balancer_id = hcloud_load_balancer.nexo.id
+  network_id       = hcloud_network.nexo.id
   ip               = "10.0.1.100"
 
-  depends_on = [hcloud_network_subnet.fuego]
+  depends_on = [hcloud_network_subnet.nexo]
 }
 
 resource "hcloud_load_balancer_target" "nodes" {
   count            = var.node_count
   type             = "server"
-  load_balancer_id = hcloud_load_balancer.fuego.id
+  load_balancer_id = hcloud_load_balancer.nexo.id
   server_id        = hcloud_server.nodes[count.index].id
   use_private_ip   = true
 
-  depends_on = [hcloud_load_balancer_network.fuego, hcloud_server_network.nodes]
+  depends_on = [hcloud_load_balancer_network.nexo, hcloud_server_network.nodes]
 }
 
 resource "hcloud_load_balancer_service" "http" {
-  load_balancer_id = hcloud_load_balancer.fuego.id
+  load_balancer_id = hcloud_load_balancer.nexo.id
   protocol         = "tcp"
   listen_port      = 80
   destination_port = 30080
@@ -217,7 +217,7 @@ resource "hcloud_load_balancer_service" "http" {
 }
 
 resource "hcloud_load_balancer_service" "https" {
-  load_balancer_id = hcloud_load_balancer.fuego.id
+  load_balancer_id = hcloud_load_balancer.nexo.id
   protocol         = "tcp"
   listen_port      = 443
   destination_port = 30443

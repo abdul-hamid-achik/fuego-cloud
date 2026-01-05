@@ -263,13 +263,14 @@ func (c *Client) GetAppStatus(ctx context.Context, appName string) (*AppStatus, 
 	}
 
 	// Determine status based on conditions
-	if deployment.Status.ReadyReplicas == *deployment.Spec.Replicas {
+	switch {
+	case deployment.Status.ReadyReplicas == *deployment.Spec.Replicas:
 		status.Status = "running"
-	} else if deployment.Status.ReadyReplicas > 0 {
+	case deployment.Status.ReadyReplicas > 0:
 		status.Status = "partially_ready"
-	} else if deployment.Status.AvailableReplicas == 0 {
+	case deployment.Status.AvailableReplicas == 0:
 		status.Status = "starting"
-	} else {
+	default:
 		status.Status = "unknown"
 	}
 

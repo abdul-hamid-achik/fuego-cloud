@@ -22,8 +22,8 @@ func TestGenerateNamespace(t *testing.T) {
 		t.Errorf("expected label 'app.kubernetes.io/name'='myapp', got %q", ns.Labels["app.kubernetes.io/name"])
 	}
 
-	if ns.Labels["app.kubernetes.io/managed-by"] != "fuego-cloud" {
-		t.Errorf("expected label 'app.kubernetes.io/managed-by'='fuego-cloud', got %q", ns.Labels["app.kubernetes.io/managed-by"])
+	if ns.Labels["app.kubernetes.io/managed-by"] != "nexo-cloud" {
+		t.Errorf("expected label 'app.kubernetes.io/managed-by'='nexo-cloud', got %q", ns.Labels["app.kubernetes.io/managed-by"])
 	}
 }
 
@@ -165,7 +165,7 @@ func TestGenerateIngress(t *testing.T) {
 		cfg := &AppConfig{
 			Name:         "myapp",
 			Namespace:    "fuego-myapp",
-			DomainSuffix: "fuego.build",
+			DomainSuffix: "nexo.build",
 		}
 
 		ingress := GenerateIngress(cfg)
@@ -178,7 +178,7 @@ func TestGenerateIngress(t *testing.T) {
 			t.Fatalf("expected 1 rule, got %d", len(ingress.Spec.Rules))
 		}
 
-		expectedHost := "myapp.fuego.build"
+		expectedHost := "myapp.nexo.build"
 		if ingress.Spec.Rules[0].Host != expectedHost {
 			t.Errorf("expected host %q, got %q", expectedHost, ingress.Spec.Rules[0].Host)
 		}
@@ -207,7 +207,7 @@ func TestGenerateIngress(t *testing.T) {
 			Name:         "myapp",
 			Namespace:    "fuego-myapp",
 			Domain:       "myapp.example.com",
-			DomainSuffix: "fuego.build",
+			DomainSuffix: "nexo.build",
 		}
 
 		ingress := GenerateIngress(cfg)

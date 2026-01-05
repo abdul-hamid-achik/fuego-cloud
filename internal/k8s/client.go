@@ -1,3 +1,4 @@
+// Package k8s provides Kubernetes deployment management.
 package k8s
 
 import (

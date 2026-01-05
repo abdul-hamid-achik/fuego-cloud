@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/abdul-hamid-achik/fuego-cloud/generated/db"
+	"github.com/abdul-hamid-achik/nexo-cloud/generated/db"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -57,7 +57,7 @@ func TestMain(m *testing.M) {
 }
 
 // Helper to create a test user
-func createTestUser(t *testing.T, ctx context.Context) db.User {
+func createTestUser(ctx context.Context, t *testing.T) db.User {
 	t.Helper()
 
 	avatarURL := "https://example.com/avatar.png"
@@ -74,13 +74,13 @@ func createTestUser(t *testing.T, ctx context.Context) db.User {
 }
 
 // Helper to cleanup test user
-func deleteTestUser(t *testing.T, ctx context.Context, id uuid.UUID) {
+func deleteTestUser(ctx context.Context, t *testing.T, id uuid.UUID) {
 	t.Helper()
 	_ = testQueries.DeleteUser(ctx, id)
 }
 
 // Helper to create a test app
-func createTestApp(t *testing.T, ctx context.Context, userID uuid.UUID) db.App {
+func createTestApp(ctx context.Context, t *testing.T, userID uuid.UUID) db.App {
 	t.Helper()
 
 	app, err := testQueries.CreateApp(ctx, db.CreateAppParams{
@@ -96,7 +96,7 @@ func createTestApp(t *testing.T, ctx context.Context, userID uuid.UUID) db.App {
 }
 
 // Helper to cleanup test app
-func deleteTestApp(t *testing.T, ctx context.Context, id uuid.UUID) {
+func deleteTestApp(ctx context.Context, t *testing.T, id uuid.UUID) {
 	t.Helper()
 	_ = testQueries.DeleteApp(ctx, id)
 }
@@ -111,8 +111,8 @@ func TestCreateUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	if user.ID == uuid.Nil {
 		t.Error("expected non-nil user ID")
@@ -131,8 +131,8 @@ func TestGetUserByID(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	got, err := testQueries.GetUserByID(ctx, user.ID)
 	if err != nil {
@@ -153,8 +153,8 @@ func TestGetUserByGitHubID(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	got, err := testQueries.GetUserByGitHubID(ctx, user.GithubID)
 	if err != nil {
@@ -172,8 +172,8 @@ func TestGetUserByUsername(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	got, err := testQueries.GetUserByUsername(ctx, user.Username)
 	if err != nil {
@@ -191,8 +191,8 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	newUsername := "updated-" + uuid.New().String()[:8]
 	newEmail := "updated-" + uuid.New().String()[:8] + "@example.com"
@@ -221,8 +221,8 @@ func TestUpdateUserPlan(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	stripeID := "cus_test123"
 	updated, err := testQueries.UpdateUserPlan(ctx, db.UpdateUserPlanParams{
@@ -245,7 +245,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
+	user := createTestUser(ctx, t)
 
 	err := testQueries.DeleteUser(ctx, user.ID)
 	if err != nil {
@@ -269,11 +269,11 @@ func TestCreateApp(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	if app.ID == uuid.Nil {
 		t.Error("expected non-nil app ID")
@@ -295,11 +295,11 @@ func TestGetAppByName(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	got, err := testQueries.GetAppByName(ctx, db.GetAppByNameParams{
 		UserID: user.ID,
@@ -320,14 +320,14 @@ func TestListAppsByUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	// Create multiple apps
-	app1 := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app1.ID)
-	app2 := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app2.ID)
+	app1 := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app1.ID)
+	app2 := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app2.ID)
 
 	apps, err := testQueries.ListAppsByUser(ctx, db.ListAppsByUserParams{
 		UserID: user.ID,
@@ -349,11 +349,11 @@ func TestUpdateAppStatus(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	deploymentID := uuid.New()
 	updated, err := testQueries.UpdateAppStatus(ctx, db.UpdateAppStatusParams{
@@ -376,11 +376,11 @@ func TestIncrementDeploymentCount(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	originalCount := app.DeploymentCount
 
@@ -400,8 +400,8 @@ func TestCountAppsByUser(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	// Get initial count
 	initialCount, err := testQueries.CountAppsByUser(ctx, user.ID)
@@ -410,8 +410,8 @@ func TestCountAppsByUser(t *testing.T) {
 	}
 
 	// Create app
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	// Count should increase
 	newCount, err := testQueries.CountAppsByUser(ctx, user.ID)
@@ -434,11 +434,11 @@ func TestCreateDeployment(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	deployment, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 		AppID:   app.ID,
@@ -468,11 +468,11 @@ func TestUpdateDeploymentStatus(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	deployment, err := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
 		AppID:   app.ID,
@@ -507,11 +507,11 @@ func TestGetLatestDeployment(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	// Create multiple deployments
 	d1, _ := testQueries.CreateDeployment(ctx, db.CreateDeploymentParams{
@@ -544,11 +544,11 @@ func TestCreateDomain(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	domainName := "test-" + uuid.New().String()[:8] + ".example.com"
 	domain, err := testQueries.CreateDomain(ctx, db.CreateDomainParams{
@@ -574,11 +574,11 @@ func TestUpdateDomainVerified(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	domain, _ := testQueries.CreateDomain(ctx, db.CreateDomainParams{
 		AppID:  app.ID,
@@ -605,11 +605,11 @@ func TestListDomainsByApp(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	// Create multiple domains
 	d1, _ := testQueries.CreateDomain(ctx, db.CreateDomainParams{
@@ -642,8 +642,8 @@ func TestCreateAPIToken(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	token, err := testQueries.CreateAPIToken(ctx, db.CreateAPITokenParams{
 		UserID:    user.ID,
@@ -667,8 +667,8 @@ func TestGetAPITokenByHash(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	tokenHash := "unique-hash-" + uuid.New().String()
 	token, _ := testQueries.CreateAPIToken(ctx, db.CreateAPITokenParams{
@@ -695,8 +695,8 @@ func TestUpdateAPITokenLastUsed(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
 	token, _ := testQueries.CreateAPIToken(ctx, db.CreateAPITokenParams{
 		UserID:    user.ID,
@@ -729,11 +729,11 @@ func TestCreateActivityLog(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	ip := netip.MustParseAddr("192.168.1.1")
 	log, err := testQueries.CreateActivityLog(ctx, db.CreateActivityLogParams{
@@ -758,11 +758,11 @@ func TestListActivityLogsByApp(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	user := createTestUser(t, ctx)
-	defer deleteTestUser(t, ctx, user.ID)
+	user := createTestUser(ctx, t)
+	defer deleteTestUser(ctx, t, user.ID)
 
-	app := createTestApp(t, ctx, user.ID)
-	defer deleteTestApp(t, ctx, app.ID)
+	app := createTestApp(ctx, t, user.ID)
+	defer deleteTestApp(ctx, t, app.ID)
 
 	// Create activity logs
 	for i := 0; i < 3; i++ {
